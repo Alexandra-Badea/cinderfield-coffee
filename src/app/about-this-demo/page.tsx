@@ -74,6 +74,7 @@ const stack = ["Next.js 16", "React 19", "TypeScript", "Tailwind CSS 4", "Supaba
 
 const notBuilt = [
   "Emails (order confirmations, roast reminders): they'd go through a service like Resend, triggered by the same webhook.",
+  "Renewal orders: Stripe bills each subscription renewal, but the shop doesn't yet turn that into a new order to roast.",
   "A page for customers to skip or change a subscription: Stripe's customer portal would handle most of it.",
   "Product photos: the bags are drawn in code, which keeps the demo light and consistent.",
 ];
