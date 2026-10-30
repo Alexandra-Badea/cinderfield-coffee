@@ -89,6 +89,57 @@
     text-transform: uppercase;
     color: var(--color-ember);
   }
+  /* long-form text: delivery, privacy, terms */
+  .prose-cf {
+    max-width: 44rem;
+    color: var(--color-roast);
+    font-size: 1.0625rem;
+    line-height: 1.7;
+  }
+  .prose-cf h2 {
+    margin-top: 2.75rem;
+    font-size: 1.75rem;
+    line-height: 1.2;
+    color: var(--color-espresso);
+  }
+  .prose-cf h3 {
+    margin-top: 1.75rem;
+    font-size: 1.25rem;
+    color: var(--color-espresso);
+  }
+  .prose-cf p,
+  .prose-cf ul {
+    margin-top: 1rem;
+  }
+  .prose-cf ul {
+    padding-left: 1.25rem;
+    list-style: disc;
+  }
+  .prose-cf li + li {
+    margin-top: 0.4rem;
+  }
+  .prose-cf li::marker {
+    color: var(--color-ember);
+  }
+  .prose-cf a {
+    font-weight: 600;
+    color: var(--color-espresso);
+    text-decoration: underline;
+    text-decoration-color: var(--color-line);
+    text-underline-offset: 3px;
+  }
+  .prose-cf a:hover {
+    color: var(--color-ember);
+  }
+  .prose-cf strong {
+    color: var(--color-espresso);
+  }
+  .prose-cf code {
+    border-radius: 0.375rem;
+    background: var(--color-sand);
+    padding: 0.1rem 0.35rem;
+    font-size: 0.9em;
+  }
   .grain {
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.16 0 0 0 0 0.11 0 0 0 0 0.08 0 0 0 .5 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.35'/%3E%3C/svg%3E");
   }
