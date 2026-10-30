@@ -28,8 +28,8 @@ export function useAdminOrders(live: boolean, initial: Order[] | null, products:
   const orders = useMemo(() => {
     if (live) return liveOrders;
     if (!generated) return null; // still on the server: the month is built from the visitor's clock
-    const top = generated[0]?.number ?? 1000;
-    const all = [...mine.map((o, i) => ({ ...o, number: top + mine.length - i })), ...generated];
+    // the visitor's own orders keep the number they saw at checkout
+    const all = [...mine, ...generated];
     return all.map((o) => (saved.status[o.id] ? { ...o, status: saved.status[o.id] } : o));
   }, [live, liveOrders, generated, mine, saved.status]);
 
