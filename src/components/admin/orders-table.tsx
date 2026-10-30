@@ -7,7 +7,7 @@ import { statusStyle } from "@/components/orders-list";
 import { countries, grinds, shipping } from "@/lib/config";
 import { formatGBP } from "@/lib/pricing";
 import type { Order, OrderStatus, Product } from "@/lib/types";
-import { useAdminOrders, writeSaved } from "./demo-store";
+import { useAdminOrders } from "./demo-store";
 
 const tabs: { value: OrderStatus | "all"; label: string }[] = [
   { value: "all", label: "All" },
@@ -27,7 +27,7 @@ function summary(o: Order) {
 }
 
 export function OrdersTable({ live, orders: initial, products }: { live: boolean; orders: Order[] | null; products: Product[] }) {
-  const [orders, setOrders] = useAdminOrders(live, initial, products);
+  const [orders, setStatus] = useAdminOrders(live, initial, products);
   const [tab, setTab] = useState<OrderStatus | "all">("all");
   const [q, setQ] = useState("");
   const [open, setOpen] = useState<string | null>(null);
@@ -45,13 +45,13 @@ export function OrdersTable({ live, orders: initial, products }: { live: boolean
   function change(o: Order, status: OrderStatus) {
     setError(null);
     const before = o.status;
-    setOrders((list) => list && list.map((x) => (x.id === o.id ? { ...x, status } : x)));
+    setStatus(o.id, status); // show it straight away, undo if the server says no
     start(async () => {
       const r = await setOrderStatus(o.id, status);
       if (!r.ok) {
         setError(r.error);
-        setOrders((list) => list && list.map((x) => (x.id === o.id ? { ...x, status: before } : x)));
-      } else if (r.demo) writeSaved((s) => ({ ...s, status: { ...s.status, [o.id]: status } }));
+        setStatus(o.id, before);
+      }
     });
   }
 

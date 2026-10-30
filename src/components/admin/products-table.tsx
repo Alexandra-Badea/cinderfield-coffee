@@ -5,12 +5,12 @@ import { Check } from "lucide-react";
 import { saveProduct, type ProductPatch } from "@/app/admin/actions";
 import { BagArt } from "@/components/bag-art";
 import type { Product } from "@/lib/types";
-import { useAdminProducts, writeSaved } from "./demo-store";
+import { useAdminProducts } from "./demo-store";
 
 const pounds = (p: number) => (p / 100).toFixed(2);
 const pence = (s: string) => Math.round(parseFloat(s) * 100);
 
-function Row({ product, onSaved }: { product: Product; onSaved: (p: Product) => void }) {
+function Row({ product, onSaved }: { product: Product; onSaved: (id: string, patch: ProductPatch) => void }) {
   const [form, setForm] = useState({ p250: pounds(product.price250), p1kg: pounds(product.price1kg), stock: String(product.stock), active: product.active, featured: product.featured });
   const [state, setState] = useState<"idle" | "saved" | string>("idle");
   const [pending, start] = useTransition();
@@ -21,8 +21,7 @@ function Row({ product, onSaved }: { product: Product; onSaved: (p: Product) => 
     start(async () => {
       const r = await saveProduct(product.id, patch);
       if (!r.ok) return setState(r.error);
-      if (r.demo) writeSaved((s) => ({ ...s, products: { ...s.products, [product.id]: patch } }));
-      onSaved({ ...product, ...patch });
+      onSaved(product.id, patch);
       setState("saved");
       setTimeout(() => setState("idle"), 1800);
     });
@@ -56,7 +55,7 @@ function Row({ product, onSaved }: { product: Product; onSaved: (p: Product) => 
 }
 
 export function ProductsTable({ live, products: initial }: { live: boolean; products: Product[] }) {
-  const [products, setProducts] = useAdminProducts(live, initial);
+  const [products, saveLocally] = useAdminProducts(live, initial);
   return (
     <div className="overflow-x-auto rounded-card bg-cream shadow-soft">
       <table className="w-full min-w-[820px] text-left text-sm">
@@ -73,7 +72,7 @@ export function ProductsTable({ live, products: initial }: { live: boolean; prod
         </thead>
         <tbody className="divide-y divide-line">
           {products.map((p) => (
-            <Row key={`${p.id}-${p.price250}-${p.stock}-${p.active}-${p.featured}`} product={p} onSaved={(next) => setProducts((list) => list.map((x) => (x.id === next.id ? next : x)))} />
+            <Row key={`${p.id}-${p.price250}-${p.stock}-${p.active}-${p.featured}`} product={p} onSaved={saveLocally} />
           ))}
         </tbody>
       </table>

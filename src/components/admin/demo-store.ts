@@ -1,63 +1,72 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
+import { browserStore, useBrowserStore, useNow } from "@/lib/browser-store";
 import { makeDemoOrders } from "@/lib/demo-data";
-import { readDemoOrders } from "@/lib/demo-orders";
+import { demoOrders } from "@/lib/demo-orders";
 import type { DiscountCode, Order, OrderStatus, Product } from "@/lib/types";
 import type { ProductPatch } from "@/app/admin/actions";
 
-/* The demo admin keeps its changes in this browser, so you can try it without breaking anything for anyone else. */
+/*
+ * The demo admin keeps its changes in this browser, so you can try it without breaking anything for anyone else.
+ * Live, each hook keeps a local copy of the server data for instant (optimistic) updates.
+ */
 
 type Saved = { status: Record<string, OrderStatus>; products: Record<string, ProductPatch>; codes: DiscountCode[]; codeActive: Record<string, boolean> };
-const KEY = "cinderfield:admin:v1";
 const blank: Saved = { status: {}, products: {}, codes: [], codeActive: {} };
 
-export function readSaved(): Saved {
-  try {
-    return { ...blank, ...JSON.parse(localStorage.getItem(KEY) ?? "{}") };
-  } catch {
-    return blank;
-  }
-}
-export function writeSaved(fn: (s: Saved) => Saved) {
-  try {
-    localStorage.setItem(KEY, JSON.stringify(fn(readSaved())));
-  } catch {
-    // storage unavailable: changes last until the page reloads
-  }
-}
+export const adminChanges = browserStore<Saved>("cinderfield:admin:v1", blank, (v) => ({ ...blank, ...(v as Partial<Saved>) }));
 
 /** Orders for the admin: the real ones when live; otherwise a generated month plus any demo orders from this browser */
 export function useAdminOrders(live: boolean, initial: Order[] | null, products: Product[]) {
-  const [orders, setOrders] = useState<Order[] | null>(live ? initial : null);
-  useEffect(() => {
-    if (live) return;
-    const saved = readSaved();
-    const mine = readDemoOrders();
-    const generated = makeDemoOrders(products, Date.now());
+  const [liveOrders, setLiveOrders] = useState(initial);
+  const saved = useBrowserStore(adminChanges);
+  const mine = useBrowserStore(demoOrders);
+  const now = useNow();
+
+  const generated = useMemo(() => (live || !now ? null : makeDemoOrders(products, now)), [live, now, products]);
+  const orders = useMemo(() => {
+    if (live) return liveOrders;
+    if (!generated) return null; // still on the server: the month is built from the visitor's clock
     const top = generated[0]?.number ?? 1000;
     const all = [...mine.map((o, i) => ({ ...o, number: top + mine.length - i })), ...generated];
-    setOrders(all.map((o) => (saved.status[o.id] ? { ...o, status: saved.status[o.id] } : o)));
-  }, [live, products]);
-  return [orders, setOrders] as const;
+    return all.map((o) => (saved.status[o.id] ? { ...o, status: saved.status[o.id] } : o));
+  }, [live, liveOrders, generated, mine, saved.status]);
+
+  function setStatus(id: string, status: OrderStatus) {
+    if (live) setLiveOrders((list) => list && list.map((o) => (o.id === id ? { ...o, status } : o)));
+    else adminChanges.set((s) => ({ ...s, status: { ...s.status, [id]: status } }));
+  }
+  return [orders, setStatus] as const;
 }
 
 export function useAdminProducts(live: boolean, initial: Product[]) {
-  const [list, setList] = useState(initial);
-  useEffect(() => {
-    if (live) return;
-    const saved = readSaved().products;
-    setList(initial.map((p) => (saved[p.id] ? { ...p, ...saved[p.id] } : p)));
-  }, [live, initial]);
-  return [list, setList] as const;
+  const [liveList, setLiveList] = useState(initial);
+  const saved = useBrowserStore(adminChanges);
+  const list = useMemo(() => (live ? liveList : initial.map((p) => (saved.products[p.id] ? { ...p, ...saved.products[p.id] } : p))), [live, liveList, initial, saved.products]);
+
+  function saveProduct(id: string, patch: ProductPatch) {
+    if (live) setLiveList((l) => l.map((p) => (p.id === id ? { ...p, ...patch } : p)));
+    else adminChanges.set((s) => ({ ...s, products: { ...s.products, [id]: patch } }));
+  }
+  return [list, saveProduct] as const;
 }
 
 export function useAdminCodes(live: boolean, initial: DiscountCode[]) {
-  const [list, setList] = useState(initial);
-  useEffect(() => {
-    if (live) return;
-    const s = readSaved();
-    setList([...s.codes, ...initial].map((c) => (c.code in s.codeActive ? { ...c, active: s.codeActive[c.code] } : c)));
-  }, [live, initial]);
-  return [list, setList] as const;
+  const [liveList, setLiveList] = useState(initial);
+  const saved = useBrowserStore(adminChanges);
+  const list = useMemo(
+    () => (live ? liveList : [...saved.codes, ...initial].map((c) => (c.code in saved.codeActive ? { ...c, active: saved.codeActive[c.code] } : c))),
+    [live, liveList, initial, saved.codes, saved.codeActive],
+  );
+
+  function setActive(code: string, active: boolean) {
+    if (live) setLiveList((l) => l.map((c) => (c.code === code ? { ...c, active } : c)));
+    else adminChanges.set((s) => ({ ...s, codeActive: { ...s.codeActive, [code]: active } }));
+  }
+  function addCode(code: DiscountCode) {
+    if (live) setLiveList((l) => [code, ...l]);
+    else adminChanges.set((s) => ({ ...s, codes: [code, ...s.codes] }));
+  }
+  return [list, { setActive, addCode }] as const;
 }

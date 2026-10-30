@@ -1,23 +1,18 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
 import { OrderReceipt } from "./order-receipt";
 import { buttonClass } from "./ui/button";
-import { readDemoOrders } from "@/lib/demo-orders";
-import type { Order } from "@/lib/types";
+import { useBrowserStore, useHydrated } from "@/lib/browser-store";
+import { demoOrders, lastOrder } from "@/lib/demo-orders";
 
 /** Shows a demo order from this browser (demo orders never leave it) */
 export function DemoReceipt({ id }: { id: string }) {
-  const [order, setOrder] = useState<Order | null | undefined>(undefined);
-  useEffect(() => {
-    let found: Order | null = null;
-    try {
-      const last = JSON.parse(sessionStorage.getItem("cinderfield:last-order") ?? "null") as Order | null;
-      if (last?.id === id) found = last;
-    } catch {}
-    setOrder(found ?? readDemoOrders().find((o) => o.id === id) ?? null);
-  }, [id]);
+  const last = useBrowserStore(lastOrder);
+  const saved = useBrowserStore(demoOrders);
+  const hydrated = useHydrated();
+  // the last order is kept for this tab even if localStorage is blocked
+  const order = !hydrated ? undefined : last?.id === id ? last : (saved.find((o) => o.id === id) ?? null);
 
   if (order === undefined) return <div className="h-72 animate-pulse rounded-card bg-cream" aria-hidden="true" />;
   if (order === null)

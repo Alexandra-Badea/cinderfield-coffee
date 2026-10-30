@@ -4,26 +4,26 @@ import { useState, useTransition } from "react";
 import { createCode, setCodeActive } from "@/app/admin/actions";
 import { formatGBP } from "@/lib/pricing";
 import type { DiscountCode } from "@/lib/types";
-import { useAdminCodes, writeSaved } from "./demo-store";
+import { useAdminCodes } from "./demo-store";
 
 const describe = (c: DiscountCode) => (c.kind === "percent" ? `${c.value}% off` : c.kind === "amount" ? `${formatGBP(c.value)} off` : "Free delivery");
 const field = "h-10 w-full rounded-xl border border-line bg-paper px-3 outline-none focus:border-espresso/50";
 
 export function DiscountsTable({ live, codes: initial }: { live: boolean; codes: DiscountCode[] }) {
-  const [codes, setCodes] = useAdminCodes(live, initial);
+  const [codes, { setActive, addCode }] = useAdminCodes(live, initial);
   const [error, setError] = useState<string | null>(null);
   const [pending, start] = useTransition();
   const [kind, setKind] = useState<DiscountCode["kind"]>("percent");
 
   function toggle(c: DiscountCode) {
     const active = !c.active;
-    setCodes((list) => list.map((x) => (x.code === c.code ? { ...x, active } : x)));
+    setActive(c.code, active);
     start(async () => {
       const r = await setCodeActive(c.code, active);
       if (!r.ok) {
         setError(r.error);
-        setCodes((list) => list.map((x) => (x.code === c.code ? { ...x, active: !active } : x)));
-      } else if (r.demo) writeSaved((s) => ({ ...s, codeActive: { ...s.codeActive, [c.code]: active } }));
+        setActive(c.code, !active);
+      }
     });
   }
 
@@ -42,8 +42,7 @@ export function DiscountsTable({ live, codes: initial }: { live: boolean; codes:
     start(async () => {
       const r = await createCode(code);
       if (!r.ok) return setError(r.error);
-      if (r.demo) writeSaved((s) => ({ ...s, codes: [code, ...s.codes] }));
-      setCodes((list) => [code, ...list]);
+      addCode(code);
     });
   }
 

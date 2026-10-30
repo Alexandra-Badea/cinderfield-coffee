@@ -5,6 +5,7 @@ import { useMemo, useState } from "react";
 import { AlertTriangle, ArrowRight, Flame, PoundSterling, RefreshCw, ShoppingBag } from "lucide-react";
 import { BagArt } from "@/components/bag-art";
 import { StatusBadge } from "@/components/orders-list";
+import { useNow } from "@/lib/browser-store";
 import { formatGBP } from "@/lib/pricing";
 import type { Order, Product } from "@/lib/types";
 import { useAdminOrders, useAdminProducts } from "./demo-store";
@@ -15,10 +16,10 @@ export function Dashboard({ live, orders: initialOrders, products: initialProduc
   const [orders] = useAdminOrders(live, initialOrders, initialProducts);
   const [products] = useAdminProducts(live, initialProducts);
   const [hover, setHover] = useState<number | null>(null);
+  const now = useNow();
 
   const stats = useMemo(() => {
-    if (!orders) return null;
-    const now = Date.now();
+    if (!orders || !now) return null;
     const valid = orders.filter((o) => o.status !== "cancelled");
     const last30 = valid.filter((o) => now - Date.parse(o.createdAt) < 30 * DAY);
     const prev30 = valid.filter((o) => { const age = now - Date.parse(o.createdAt); return age >= 30 * DAY && age < 60 * DAY; });
@@ -44,7 +45,7 @@ export function Dashboard({ live, orders: initialOrders, products: initialProduc
       toRoastOrders: toRoast.length,
       top: [...bags.entries()].sort((a, b) => b[1] - a[1]).slice(0, 5),
     };
-  }, [orders]);
+  }, [orders, now]);
 
   if (!orders || !stats) return <div className="h-96 animate-pulse rounded-card bg-cream" aria-hidden="true" />;
   const byId = new Map(products.map((p) => [p.id, p]));

@@ -1,30 +1,14 @@
+import { browserStore } from "./browser-store";
 import type { Order } from "./types";
 
 /* In demo mode, orders are kept in this browser only. Nothing is sent anywhere. */
 
-const KEY = "cinderfield:orders:v1";
+export const demoOrders = browserStore<Order[]>("cinderfield:orders:v1", [], (v) => (Array.isArray(v) ? v : []));
 
-export function readDemoOrders(): Order[] {
-  try {
-    const v = JSON.parse(localStorage.getItem(KEY) ?? "[]");
-    return Array.isArray(v) ? v : [];
-  } catch {
-    return [];
-  }
-}
+/** The order just placed, for the confirmation page (kept for this tab only) */
+export const lastOrder = browserStore<Order | null>("cinderfield:last-order", null, (v) => (v && typeof v === "object" ? (v as Order) : null), "session");
 
 export function saveDemoOrder(order: Order) {
-  try {
-    localStorage.setItem(KEY, JSON.stringify([order, ...readDemoOrders()].slice(0, 25)));
-  } catch {
-    // storage unavailable: the confirmation page still shows the order from this visit
-  }
-}
-
-export function updateDemoOrder(id: string, patch: Partial<Order>) {
-  try {
-    localStorage.setItem(KEY, JSON.stringify(readDemoOrders().map((o) => (o.id === id ? { ...o, ...patch } : o))));
-  } catch {
-    // ignore
-  }
+  demoOrders.set((list) => [order, ...list].slice(0, 25));
+  lastOrder.set(order);
 }

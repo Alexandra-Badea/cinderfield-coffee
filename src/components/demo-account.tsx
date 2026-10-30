@@ -1,16 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
 import { Info } from "lucide-react";
 import { OrdersList } from "./orders-list";
 import { buttonClass } from "./ui/button";
-import { readDemoOrders } from "@/lib/demo-orders";
-import type { Order } from "@/lib/types";
+import { useBrowserStore, useHydrated } from "@/lib/browser-store";
+import { demoOrders } from "@/lib/demo-orders";
 
 export function DemoAccount() {
-  const [orders, setOrders] = useState<Order[] | null>(null);
-  useEffect(() => setOrders(readDemoOrders()), []);
+  const saved = useBrowserStore(demoOrders);
+  const orders = useHydrated() ? saved : null;
   return (
     <div className="space-y-8">
       <p className="flex gap-3 rounded-2xl bg-sand/70 p-4 text-roast">

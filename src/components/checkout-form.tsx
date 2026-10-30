@@ -54,7 +54,6 @@ export function CheckoutForm() {
       const data = (await res.json()) as { order?: Order; error?: string };
       if (!res.ok || !data.order) throw new Error(data.error ?? "Something went wrong.");
       saveDemoOrder(data.order);
-      sessionStorage.setItem("cinderfield:last-order", JSON.stringify(data.order));
       router.push(`/checkout/success?order=${data.order.id}`);
       clear();
     } catch (err) {

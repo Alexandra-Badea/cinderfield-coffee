@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Check, Minus, Plus, RefreshCw, ShoppingBag } from "lucide-react";
 import { useCart } from "./cart/cart-provider";
+import { useSearch } from "@/lib/browser-store";
 import { grinds, shop, sizes } from "@/lib/config";
 import { formatGBP, unitPrice } from "@/lib/pricing";
 import type { Every, Grind, Product, Size } from "@/lib/types";
@@ -12,19 +13,16 @@ const grindOrder: Grind[] = ["whole", "espresso", "moka", "filter", "cafetiere"]
 export function BuyBox({ product }: { product: Product }) {
   const { add } = useCart();
   const [size, setSize] = useState<Size>("250g");
-  const [grind, setGrind] = useState<Grind>("whole");
-  const [plan, setPlan] = useState<"once" | "subscribe">("once");
+  // The coffee finder links here with ?grind=… and ?plan=subscribe already chosen; the visitor's own pick wins
+  const url = new URLSearchParams(useSearch());
+  const urlGrind = url.get("grind");
+  const [grindPick, setGrind] = useState<Grind | null>(null);
+  const grind: Grind = grindPick ?? (urlGrind && urlGrind in grinds ? (urlGrind as Grind) : "whole");
+  const [planPick, setPlan] = useState<"once" | "subscribe" | null>(null);
+  const plan = planPick ?? (url.get("plan") === "subscribe" ? "subscribe" : "once");
   const [every, setEvery] = useState<Every>(4);
   const [qty, setQty] = useState(1);
   const [added, setAdded] = useState(false);
-
-  // The coffee finder links here with ?grind=… and ?plan=subscribe already chosen
-  useEffect(() => {
-    const sp = new URLSearchParams(location.search);
-    const g = sp.get("grind") as Grind | null;
-    if (g && g in grinds) setGrind(g);
-    if (sp.get("plan") === "subscribe") setPlan("subscribe");
-  }, []);
 
   const subscribe = plan === "subscribe";
   const price = unitPrice(product, size, subscribe);
