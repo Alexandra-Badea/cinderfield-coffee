@@ -12,7 +12,14 @@ export const hasSupabase = Boolean(
 export const hasStripe = Boolean(process.env.STRIPE_SECRET_KEY && process.env.STRIPE_WEBHOOK_SECRET);
 export const isLive = hasSupabase && hasStripe && Boolean(process.env.SUPABASE_SERVICE_ROLE_KEY);
 
-export const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000").replace(/\/$/, "");
+/** The public address, for links in emails, Stripe redirects and social previews. Vercel provides one automatically. */
+export const siteUrl = (
+  process.env.NEXT_PUBLIC_SITE_URL ||
+  (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : "http://localhost:3000")
+).replace(/\/$/, "");
+
+/** Where the code lives, linked from the About this demo page */
+export const repoUrl = "https://github.com/Alexandra-Badea/cinderfield-coffee";
 
 export const shop = {
   name: "Cinderfield Coffee Roasters",
