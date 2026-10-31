@@ -5,7 +5,8 @@ import { hasSupabase, isLive, siteUrl } from "@/lib/config";
 import { stripe } from "@/lib/stripe";
 import { userClient } from "@/lib/supabase/clients";
 
-export type AuthState = { error?: string; message?: string } | null;
+/** resendTo: set when sign-in failed only because the email isn't confirmed yet */
+export type AuthState = { error?: string; message?: string; resendTo?: string } | null;
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const MIN_PASSWORD = 8;
@@ -16,7 +17,10 @@ export async function signIn(_prev: AuthState, form: FormData): Promise<AuthStat
   const password = String(form.get("password") ?? "");
   const supabase = await userClient();
   const { error } = await supabase.auth.signInWithPassword({ email, password });
-  if (error) return { error: error.message.includes("confirm") ? "Please confirm your email first: check your inbox." : "That email and password don't match." };
+  if (error) {
+    if (error.code === "email_not_confirmed" || /confirm/i.test(error.message)) return { error: "Please confirm your email first: the link is in your inbox.", resendTo: email };
+    return { error: "That email and password don't match." };
+  }
   // only ever send people to a page on this site
   const next = String(form.get("next") ?? "");
   redirect(next.startsWith("/") && !next.startsWith("//") ? next : "/account");
@@ -102,4 +106,15 @@ export async function manageSubscription() {
     redirect("/account?error=portal");
   }
   redirect(url);
+}
+
+/** Sends the sign-up confirmation email again (it may have expired, or gone to spam) */
+export async function resendConfirmation(_prev: AuthState, form: FormData): Promise<AuthState> {
+  if (!hasSupabase) return { error: "Customer accounts aren't switched on for this store yet." };
+  const email = String(form.get("email") ?? "").trim();
+  if (!EMAIL.test(email)) return { error: "Please enter a valid email address." };
+  const supabase = await userClient();
+  const { error } = await supabase.auth.resend({ type: "signup", email, options: { emailRedirectTo: `${siteUrl}/auth/callback` } });
+  if (error) return { error: /rate|seconds/i.test(error.message) ? "We've just sent one. Please wait a minute before asking again." : "We couldn't send it just now. Please try again in a minute." };
+  return { message: `We've sent a new confirmation link to ${email}.` };
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState, useState } from "react";
-import { requestReset, signIn, signUp, type AuthState } from "@/app/account/actions";
+import { requestReset, resendConfirmation, signIn, signUp, type AuthState } from "@/app/account/actions";
 import { buttonClass } from "./ui/button";
 
 const field = "h-12 w-full rounded-2xl border border-line bg-paper px-4 outline-none transition focus:border-espresso/50";
@@ -12,6 +12,7 @@ export function AuthForms({ next = "/account" }: { next?: string }) {
   const [inState, inAction, inPending] = useActionState<AuthState, FormData>(signIn, null);
   const [upState, upAction, upPending] = useActionState<AuthState, FormData>(signUp, null);
   const [resetState, resetAction, resetPending] = useActionState<AuthState, FormData>(requestReset, null);
+  const [resendState, resendAction, resendPending] = useActionState<AuthState, FormData>(resendConfirmation, null);
 
   return (
     <div className="mx-auto max-w-md rounded-card bg-cream p-6 shadow-soft sm:p-8">
@@ -63,7 +64,21 @@ export function AuthForms({ next = "/account" }: { next?: string }) {
               {inState?.error && <p role="alert" className="text-sm text-ember">{inState.error}</p>}
               <button type="submit" disabled={inPending} className={buttonClass("dark", "lg", "w-full")}>{inPending ? "Signing in…" : "Sign in"}</button>
             </form>
-          ) : upState?.message ? (
+          ) : null}
+          {view === "in" && inState?.resendTo ? (
+            resendState?.message ? (
+              <p role="status" className="mt-4 rounded-2xl bg-sage/15 p-4 text-sm">{resendState.message}</p>
+            ) : (
+              <form action={resendAction} className="mt-4 text-sm">
+                <input type="hidden" name="email" value={inState.resendTo} />
+                <button type="submit" disabled={resendPending} className="font-semibold underline decoration-line underline-offset-2 hover:text-ember">
+                  {resendPending ? "Sending…" : "Send the confirmation link again"}
+                </button>
+                {resendState?.error && <p role="alert" className="mt-1 text-ember">{resendState.error}</p>}
+              </form>
+            )
+          ) : null}
+          {view === "in" ? null : upState?.message ? (
             <p role="status" className="mt-6 rounded-2xl bg-sage/15 p-4">{upState.message}</p>
           ) : (
             <form action={upAction} className="mt-6 space-y-4">
