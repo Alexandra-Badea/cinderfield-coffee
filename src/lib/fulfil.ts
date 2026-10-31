@@ -1,7 +1,11 @@
 import "server-only";
 import type Stripe from "stripe";
+import { orderConfirmation } from "@/emails/templates";
+import { siteUrl } from "./config";
+import { canSendEmail, sendEmail } from "./email";
 import { renewalFrom, type OrderItemRow, type OriginalOrder } from "./renewal";
 import { serviceClient } from "./supabase/clients";
+import { toOrder, type OrderRow } from "./supabase/map";
 
 const idOf = (v: string | { id: string } | null | undefined) => (typeof v === "string" ? v : (v?.id ?? null));
 
@@ -38,7 +42,23 @@ export async function markPaid(session: Stripe.Checkout.Session) {
   const customer = idOf(session.customer);
   const userId = updated[0].user_id as string | null;
   if (customer && userId) await db.from("profiles").update({ stripe_customer_id: customer }).eq("id", userId).is("stripe_customer_id", null);
+  await emailConfirmation(orderId);
   return true;
+}
+
+/** The order confirmation email, with a picture of each bag */
+async function emailConfirmation(orderId: string) {
+  if (!canSendEmail) return;
+  const db = serviceClient();
+  const [{ data }, { data: products }] = await Promise.all([
+    db.from("orders").select("*, order_items(*)").eq("id", orderId).single(),
+    db.from("products").select("id, slug"),
+  ]);
+  if (!data) return;
+  const order = toOrder(data as OrderRow);
+  if (!order.email) return;
+  const slugs = Object.fromEntries((products ?? []).map((p) => [p.id as string, p.slug as string]));
+  await sendEmail({ to: order.email, ...orderConfirmation({ site: siteUrl, order, slugs }) });
 }
 
 /** A checkout that was abandoned: its pending order is cancelled */

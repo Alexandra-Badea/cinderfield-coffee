@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light only">
+<meta name="supported-color-schemes" content="light">
+<title>Confirm your email</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600&family=Instrument+Sans:wght@400;600&family=Instrument+Serif:ital@1&display=swap" rel="stylesheet">
+<style>
+  .btn { animation: glow 2.6s ease-in-out infinite; }
+  @keyframes glow { 0%, 100% { box-shadow: 0 10px 24px -10px rgba(217,72,15,.7); } 50% { box-shadow: 0 10px 34px -6px rgba(255,122,46,.9); } }
+  a { color: #d9480f; }
+  @media (max-width: 620px) {
+    .px { padding-left: 24px !important; padding-right: 24px !important; }
+    .h1 { font-size: 32px !important; }
+    .stack { display: block !important; width: 100% !important; }
+  }
+  @media (prefers-reduced-motion: reduce) { .btn { animation: none; } }
+</style>
+</head>
+<body style="margin:0;padding:0;background:#f4f1ec">
+<div style="display:none;max-height:0;overflow:hidden;opacity:0">One click and your Cinderfield account is ready.&#8199;&#65279;&#847;&#8199;&#65279;&#847;&#8199;&#65279;&#847;</div>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f4f1ec"><tr><td align="center" style="padding:28px 12px 40px">
+  <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="width:100%;max-width:600px">
+    <tr><td style="background:#16100c;border-radius:28px 28px 0 0;padding:26px 32px 4px">
+      <a href="{{ .SiteURL }}" style="text-decoration:none"><img src="{{ .SiteURL }}/email/logo.png" width="193" height="50" alt="Cinderfield Coffee Roasters" style="display:block;border:0"></a>
+    </td></tr>
+    <tr><td style="background:#16100c;line-height:0"><img src="{{ .SiteURL }}/email/hero.gif" width="600" alt="" style="display:block;width:100%;max-width:600px;height:auto;border:0"></td></tr>
+    <tr><td class="px" style="background:#fcfbf8;border-radius:0 0 28px 28px;padding:40px 48px 44px">
+<h1 class="h1" style="margin:0 0 16px;font-family:'Bricolage Grotesque', 'Helvetica Neue', Helvetica, Arial, sans-serif;font-weight:600;font-size:40px;line-height:1.04;letter-spacing:-1.2px;color:#16100c">One click and <em style="font-family:'Instrument Serif', Georgia, 'Times New Roman', serif;font-weight:400;font-style:italic;letter-spacing:-0.4px;color:#d9480f">you're in.</em></h1>
+<p style="margin:0 0 16px;font-family:'Instrument Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;font-size:16px;line-height:1.6;color:#3e3129;">Thanks for signing up. Confirm your email and every order, subscription and review lives in one place.</p>
+<table role="presentation" cellpadding="0" cellspacing="0" style="margin:28px 0 8px"><tr><td class="btn" style="border-radius:999px;background:#d9480f;box-shadow:0 10px 24px -10px rgba(217,72,15,.7)">
+<a href="{{ .ConfirmationURL }}" style="display:inline-block;padding:16px 32px;font-family:'Instrument Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;font-size:16px;font-weight:600;color:#ffffff;text-decoration:none;border-radius:999px">Confirm my account&nbsp;&rarr;</a></td></tr></table>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:28px 0 4px;border-top:1px solid #e9e3da"><tr><td class="stack" valign="top" style="padding:18px 8px 0 0;width:33%"><p style="margin:0;font-family:'Bricolage Grotesque', 'Helvetica Neue', Helvetica, Arial, sans-serif;font-size:16px;font-weight:600;color:#16100c">Every order</p><p style="margin:4px 0 0;font-family:'Instrument Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;font-size:13px;line-height:1.5;color:#6f645c">Track it from roast day to your door</p></td><td class="stack" valign="top" style="padding:18px 8px 0 0;width:33%"><p style="margin:0;font-family:'Bricolage Grotesque', 'Helvetica Neue', Helvetica, Arial, sans-serif;font-size:16px;font-weight:600;color:#16100c">Subscriptions</p><p style="margin:4px 0 0;font-family:'Instrument Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;font-size:13px;line-height:1.5;color:#6f645c">Change your card or cancel in seconds</p></td><td class="stack" valign="top" style="padding:18px 8px 0 0;width:33%"><p style="margin:0;font-family:'Bricolage Grotesque', 'Helvetica Neue', Helvetica, Arial, sans-serif;font-size:16px;font-weight:600;color:#16100c">Faster checkout</p><p style="margin:4px 0 0;font-family:'Instrument Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;font-size:13px;line-height:1.5;color:#6f645c">We remember who you are</p></td></tr></table>
+<p style="margin:16px 0 0;font-family:'Instrument Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;font-size:13px;line-height:1.6;color:#6f645c">Button not working? Copy this link into your browser:<br><a href="{{ .ConfirmationURL }}" style="color:#d9480f;word-break:break-all">{{ .ConfirmationURL }}</a></p>
+    </td></tr>
+    <tr><td style="padding:24px 24px 0;text-align:center;font-family:'Instrument Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;font-size:12px;line-height:1.7;color:#6f645c">
+      You're getting this because someone used this address on our shop. If it wasn't you, ignore it and nothing will change.<br><br>Cinderfield Coffee Roasters · Roasted every Tuesday, posted Wednesday<br>
+      <a href="{{ .SiteURL }}" style="color:#6f645c">Visit the shop</a> · <a href="{{ .SiteURL }}/account" style="color:#6f645c">Your account</a> · <a href="{{ .SiteURL }}/privacy" style="color:#6f645c">Privacy</a>
+    </td></tr>
+  </table>
+</td></tr></table>
+</body>
+</html>

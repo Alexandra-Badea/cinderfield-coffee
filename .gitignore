@@ -45,3 +45,6 @@ next-env.d.ts
 
 # written by `next dev` for coding tools
 AGENTS.md
+
+# email previews made by npm run email:templates
+/email-previews
