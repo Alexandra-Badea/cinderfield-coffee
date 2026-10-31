@@ -38,7 +38,7 @@ export function Footer() {
     <footer className="roastery relative mt-28 overflow-hidden rounded-t-[2.5rem] sm:rounded-t-[3.5rem]">
       <div className="grain pointer-events-none absolute inset-0 opacity-25" aria-hidden="true" />
       <div className="container-x relative grid gap-14 pb-10 pt-16 md:grid-cols-[1.25fr_2fr] md:pt-20">
-        <div className="max-w-sm">
+        <div className="min-w-0 max-w-sm">
           <p className="display text-4xl text-cream sm:text-5xl">
             Fresh coffee, <em className="text-glow">every month.</em>
           </p>

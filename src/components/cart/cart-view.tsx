@@ -82,11 +82,11 @@ export function CartView({ live }: { live: boolean }) {
 
   return (
     <div className="mt-10 grid gap-8 lg:grid-cols-[1.5fr_1fr] lg:items-start">
-      <div className="rounded-card bg-cream px-6 shadow-soft">
+      <div className="min-w-0 rounded-card bg-cream px-5 shadow-soft sm:px-6">
         <CartLines />
       </div>
 
-      <aside className="space-y-5 rounded-card bg-cream p-6 shadow-soft lg:sticky lg:top-28" aria-label="Order summary">
+      <aside className="min-w-0 space-y-5 rounded-card bg-cream p-5 shadow-soft sm:p-6 lg:sticky lg:top-28" aria-label="Order summary">
         <h2 className="text-2xl">Order summary</h2>
         <FreeShipping subtotal={t.subtotal} subscription={subscription} />
 
@@ -123,7 +123,7 @@ export function CartView({ live }: { live: boolean }) {
           <form onSubmit={applyCode}>
             <label htmlFor="code" className="mb-2 block text-sm font-semibold">Discount code</label>
             <div className="flex gap-2">
-              <input id="code" value={codeInput} onChange={(e) => setCodeInput(e.target.value.toUpperCase())} placeholder="e.g. WELCOME10" autoComplete="off" className="h-11 min-w-0 flex-1 rounded-full border border-line bg-paper px-4 uppercase tracking-wide outline-none focus:border-espresso/50" />
+              <input id="code" value={codeInput} onChange={(e) => setCodeInput(e.target.value.toUpperCase())} placeholder="e.g. WELCOME10" autoComplete="off" className="h-11 w-0 min-w-0 flex-1 rounded-full border border-line bg-paper px-4 uppercase tracking-wide outline-none focus:border-espresso/50" />
               <button type="submit" disabled={!codeInput || checking} className={buttonClass("outline", "md")}>
                 {checking ? "Checking…" : "Apply"}
               </button>

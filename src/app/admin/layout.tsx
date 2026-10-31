@@ -23,7 +23,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </p>
       )}
       <div className="mt-8 grid gap-8 lg:grid-cols-[210px_1fr]">
-        <aside className="lg:sticky lg:top-28 lg:self-start">
+        <aside className="min-w-0 lg:sticky lg:top-28 lg:self-start">
           <AdminNav />
         </aside>
         <div className="min-w-0">{children}</div>

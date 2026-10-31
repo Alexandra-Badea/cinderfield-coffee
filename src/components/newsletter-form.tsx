@@ -25,7 +25,7 @@ export function NewsletterForm({ dark = false }: { dark?: boolean }) {
           required
           autoComplete="email"
           placeholder="you@example.com"
-          className={`min-w-0 flex-1 bg-transparent px-4 text-[0.95rem] outline-none ${dark ? "text-cream placeholder:text-cream/45" : "placeholder:text-muted/70"}`}
+          className={`w-0 min-w-0 flex-1 bg-transparent px-4 text-[0.95rem] outline-none ${dark ? "text-cream placeholder:text-cream/45" : "placeholder:text-muted/70"}`}
         />
         <button type="submit" disabled={pending} className="h-10 shrink-0 rounded-full bg-ember px-5 text-sm font-semibold text-white transition hover:bg-ember-dark disabled:opacity-60">
           {pending ? "Joining…" : "Join"}
