@@ -12,26 +12,6 @@ insert into public.products (id, slug, name, origin, region, process, roast, roa
   ('p-decaf', 'swiss-water-decaf', 'Swiss Water Decaf', 'Peru', 'Cajamarca', 'washed', 'medium', 3, '1,700m', 'Caturra, Typica', array['Cocoa', 'Red apple', 'Toffee']::text[], array['chocolate', 'caramel']::text[], array['espresso', 'filter', 'cafetiere', 'moka']::text[], 'All of the flavour, none of the jitters. Decaffeinated with water only.', 'Decaffeinated in Canada with the Swiss Water Process, which uses only water, no chemicals. 99.9% caffeine-free and properly tasty: cocoa, red apple and toffee. Evening coffee, sorted.', 1100, 3500, 29, false, false, true, '{"bag":"#d9d4ea","label":"#fbfaff","ink":"#26213a","accent":"#7a5fb0","pattern":"moon"}'::jsonb, true)
 on conflict (id) do nothing;
 
-insert into public.reviews (product_id, author_name, rating, body, created_at) values
-  ('p-morning-field', 'Hannah', 5, 'Our everyday coffee now. Lovely in a flat white and still good when I forget it in the cafetière.', '2026-09-28'),
-  ('p-morning-field', 'Tom', 4, 'Smooth and sweet. I''d like it a touch stronger for espresso, but as filter it''s spot on.', '2026-09-12'),
-  ('p-morning-field', 'Priya', 5, 'Arrived two days after roasting. You can smell the difference when you open the bag.', '2026-08-30'),
-  ('p-night-shift', 'Marcus', 5, 'Proper heavy espresso. Cuts through oat milk, which most coffees don''t.', '2026-10-02'),
-  ('p-night-shift', 'Ella', 4, 'Big chocolate, a bit of smoke. Exactly what I wanted for my moka pot.', '2026-09-19'),
-  ('p-pink-bourbon', 'Jonah', 5, 'Tastes like grapes, I''m not joking. Brewed as V60 it''s the best coffee I''ve had at home.', '2026-10-09'),
-  ('p-pink-bourbon', 'Sofia', 5, 'Floral and sweet, and the rose really comes through as it cools.', '2026-09-25'),
-  ('p-konga', 'Liam', 5, 'Like jasmine tea. Very delicate, needs a light hand when brewing.', '2026-09-07'),
-  ('p-konga', 'Grace', 4, 'Lovely lemon notes. Too light for me with milk, perfect black.', '2026-08-21'),
-  ('p-guji', 'Noah', 5, 'Blueberry muffin in a cup. My partner who ''doesn''t like fruity coffee'' finished the bag.', '2026-10-05'),
-  ('p-guji', 'Amira', 5, 'Wild as espresso, beautiful as filter. Order before it sells out.', '2026-09-16'),
-  ('p-guji', 'Ben', 4, 'Big jammy fruit. A bit much for every day but a real treat.', '2026-09-01'),
-  ('p-cerrado', 'Chloe', 5, 'Chocolate biscuit is exactly right. My go-to for lattes.', '2026-09-22'),
-  ('p-kirinyaga', 'Oscar', 5, 'Blackcurrant and grapefruit, so juicy. Kenyan coffee at its best.', '2026-10-11'),
-  ('p-huehue', 'Maya', 5, 'Chocolate orange! Works in everything I own: espresso, Aeropress and cafetière.', '2026-09-29'),
-  ('p-huehue', 'Daniel', 4, 'Balanced and sweet. A safe pick for guests who like ''normal'' coffee.', '2026-09-03'),
-  ('p-decaf', 'Ruth', 5, 'I can have coffee after dinner again and it actually tastes of something.', '2026-10-04'),
-  ('p-decaf', 'Sam', 4, 'Nobody at work guessed it was decaf.', '2026-09-14');
-
 insert into public.discount_codes (code, kind, value, min_subtotal, active, description) values
   ('WELCOME10', 'percent', 10, 0, true, '10% off your first order'),
   ('FREESHIP', 'shipping', 0, 1500, true, 'Free standard delivery over £15'),

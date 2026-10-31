@@ -1,5 +1,5 @@
-// Runs the real migration and seed in an in-memory Postgres (PGlite), then checks who can see and change what.
-import { readFileSync } from "node:fs";
+// Runs the real migrations and seed in an in-memory Postgres (PGlite), then checks who can see and change what.
+import { readdirSync, readFileSync } from "node:fs";
 import { PGlite } from "@electric-sql/pglite";
 import { beforeAll, describe, expect, it } from "vitest";
 
@@ -27,8 +27,9 @@ beforeAll(async () => {
     alter default privileges in schema public grant all on sequences to anon, authenticated;
     alter default privileges in schema public grant execute on functions to anon, authenticated;
   `);
-  await db.exec(readFileSync(new URL("migrations/20261030120000_init.sql", dir), "utf8"));
+  for (const file of readdirSync(new URL("migrations/", dir)).sort()) await db.exec(readFileSync(new URL(`migrations/${file}`, dir), "utf8"));
   await db.exec(readFileSync(new URL("seed.sql", dir), "utf8"));
+  await db.exec(readFileSync(new URL("seed-sample-reviews.sql", dir), "utf8"));
 
   ann = (await rows<{ id: string }>(`insert into auth.users (email, raw_user_meta_data) values ('ann@example.com', '{"full_name":"Ann"}') returning id`))[0].id;
   bea = (await rows<{ id: string }>(`insert into auth.users (email) values ('bea@example.com') returning id`))[0].id;
