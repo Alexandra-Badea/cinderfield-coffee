@@ -11,14 +11,13 @@
 // Run it by hand with: npm run db:migrate
 
 import { existsSync, readdirSync, readFileSync } from "node:fs";
-import { pathToFileURL } from "node:url";
 import postgres from "postgres";
 
 const root = new URL("../", import.meta.url);
 const read = (path) => readFileSync(new URL(path, root), "utf8");
 
 /** @param {import("postgres").Sql} sql */
-export async function migrate(sql, { sampleReviews = false, log = console.log } = {}) {
+async function migrate(sql, { sampleReviews = false, log = console.log } = {}) {
   const files = readdirSync(new URL("supabase/migrations/", root))
     .filter((f) => f.endsWith(".sql"))
     .sort();
@@ -61,28 +60,50 @@ export async function migrate(sql, { sampleReviews = false, log = console.log } 
   });
 }
 
+const CONNECTION_ERRORS = new Set(["CONNECT_TIMEOUT", "ECONNREFUSED", "ENETUNREACH", "EHOSTUNREACH", "ETIMEDOUT", "ENOTFOUND", "EAI_AGAIN"]);
+
+/** A connection from a URL, minus the query options other tools add (postgres.js would pass them on to the server) */
+function connect(raw) {
+  const url = new URL(raw);
+  const local = /^(localhost|127\.0\.0\.1)$/.test(url.hostname);
+  url.search = "";
+  // prepare: false works through Supabase's connection pooler too
+  return postgres(url.toString(), { max: 1, prepare: false, ssl: local ? false : "require", connect_timeout: 20, onnotice: () => {} });
+}
+
 async function main() {
   if (existsSync(new URL(".env.local", root))) process.loadEnvFile(new URL(".env.local", root));
-  // The Vercel Supabase integration provides POSTGRES_URL_NON_POOLING (best for schema changes) and POSTGRES_URL
-  const url = process.env.POSTGRES_URL_NON_POOLING || process.env.POSTGRES_URL || process.env.DATABASE_URL;
-  if (!url) {
+  // The Vercel Supabase integration adds both: the direct one suits schema changes, the pooled one always connects
+  const candidates = ["POSTGRES_URL_NON_POOLING", "POSTGRES_URL", "DATABASE_URL"].filter((k) => process.env[k]);
+  if (candidates.length === 0) {
     console.log("Database: no POSTGRES_URL set, skipping migrations.");
     return;
   }
-  console.log("Database: checking migrations…");
-  // prepare: false works through Supabase's connection pooler too
-  const sql = postgres(url, { max: 1, prepare: false, ssl: /localhost|127\.0\.0\.1/.test(url) ? false : "require", onnotice: () => {} });
-  try {
-    await migrate(sql, { sampleReviews: process.env.SEED_SAMPLE_REVIEWS === "true" });
-    console.log("Database: up to date.");
-  } finally {
-    await sql.end({ timeout: 5 });
+  for (const [i, name] of candidates.entries()) {
+    console.log(`Database: checking migrations (using ${name})…`);
+    const sql = connect(process.env[name]);
+    try {
+      await migrate(sql, { sampleReviews: process.env.SEED_SAMPLE_REVIEWS === "true" });
+      console.log("Database: up to date.");
+      return;
+    } catch (err) {
+      const unreachable = CONNECTION_ERRORS.has(err.code);
+      if (!unreachable || i === candidates.length - 1) throw err;
+      console.log(`Database: couldn't reach it through ${name} (${err.code}), trying the next address.`);
+    } finally {
+      await sql.end({ timeout: 5 }).catch(() => {});
+    }
   }
 }
 
-if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
-  main().catch((err) => {
-    console.error(`Database: migration failed. ${err.message}`);
-    process.exit(1);
-  });
-}
+// If anything hangs, fail the build with a clear message rather than waiting forever
+const watchdog = setTimeout(() => {
+  console.error("Database: no answer after 2 minutes, stopping.");
+  process.exit(1);
+}, 120_000);
+watchdog.unref();
+
+main().catch((err) => {
+  console.error(`Database: migration failed. ${err.message}${err.code ? ` (${err.code})` : ""}`);
+  process.exit(1);
+});
