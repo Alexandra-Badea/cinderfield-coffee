@@ -1,12 +1,14 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { hasSupabase, siteUrl } from "@/lib/config";
+import { hasSupabase, isLive, siteUrl } from "@/lib/config";
+import { stripe } from "@/lib/stripe";
 import { userClient } from "@/lib/supabase/clients";
 
 export type AuthState = { error?: string; message?: string } | null;
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+const MIN_PASSWORD = 8;
 
 export async function signIn(_prev: AuthState, form: FormData): Promise<AuthState> {
   if (!hasSupabase) return { error: "Customer accounts aren't switched on for this store yet." };
@@ -27,19 +29,77 @@ export async function signUp(_prev: AuthState, form: FormData): Promise<AuthStat
   const password = String(form.get("password") ?? "");
   if (!name) return { error: "Please tell us your name." };
   if (!EMAIL.test(email)) return { error: "Please enter a valid email address." };
-  if (password.length < 8) return { error: "Please use at least 8 characters for your password." };
+  if (password.length < MIN_PASSWORD) return { error: `Please use at least ${MIN_PASSWORD} characters for your password.` };
   const supabase = await userClient();
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
     options: { data: { full_name: name }, emailRedirectTo: `${siteUrl}/auth/callback` },
   });
-  if (error) return { error: error.message };
+  if (error) return { error: /registered|exists/i.test(error.message) ? "There's already an account with that email. Try signing in, or reset your password." : error.message };
   if (!data.session) return { message: `Nearly done: we've sent a link to ${email}. Click it to confirm your account.` };
-  redirect("/account");
+  const next = String(form.get("next") ?? "");
+  redirect(next.startsWith("/") && !next.startsWith("//") ? next : "/account");
 }
 
 export async function signOut() {
   if (hasSupabase) await (await userClient()).auth.signOut();
   redirect("/");
+}
+
+
+/** Sends a password reset link. Always answers the same way, so it can't be used to find out who has an account. */
+export async function requestReset(_prev: AuthState, form: FormData): Promise<AuthState> {
+  if (!hasSupabase) return { error: "Customer accounts aren't switched on for this store yet." };
+  const email = String(form.get("email") ?? "").trim();
+  if (!EMAIL.test(email)) return { error: "Please enter a valid email address." };
+  const supabase = await userClient();
+  await supabase.auth.resetPasswordForEmail(email, { redirectTo: `${siteUrl}/auth/callback?next=/account/password` });
+  return { message: `If there's an account for ${email}, a link to choose a new password is on its way. It works for an hour.` };
+}
+
+/** Sets a new password for the signed-in customer (also used after following a reset link) */
+export async function updatePassword(_prev: AuthState, form: FormData): Promise<AuthState> {
+  if (!hasSupabase) return { error: "Customer accounts aren't switched on for this store yet." };
+  const password = String(form.get("password") ?? "");
+  if (password.length < MIN_PASSWORD) return { error: `Please use at least ${MIN_PASSWORD} characters.` };
+  if (password !== String(form.get("confirm") ?? "")) return { error: "The two passwords don't match." };
+  const supabase = await userClient();
+  const { data: auth } = await supabase.auth.getUser();
+  if (!auth.user) return { error: "Your link has expired. Please ask for a new one." };
+  const { error } = await supabase.auth.updateUser({ password });
+  if (error) return { error: error.message.includes("different") ? "Please choose a password you haven't used here before." : "We couldn't change your password. Please try again." };
+  redirect("/account?updated=password");
+}
+
+/** Changes the name on the account (the database only lets customers change their own name) */
+export async function updateName(_prev: AuthState, form: FormData): Promise<AuthState> {
+  if (!hasSupabase) return { error: "Customer accounts aren't switched on for this store yet." };
+  const name = String(form.get("name") ?? "").trim().slice(0, 80);
+  if (!name) return { error: "Please enter your name." };
+  const supabase = await userClient();
+  const { data: auth } = await supabase.auth.getUser();
+  if (!auth.user) return { error: "Please sign in again." };
+  const { error } = await supabase.from("profiles").update({ full_name: name }).eq("id", auth.user.id);
+  if (error) return { error: "We couldn't save that. Please try again." };
+  await supabase.auth.updateUser({ data: { full_name: name } });
+  return { message: "Saved." };
+}
+
+/** Opens Stripe's customer portal, where customers update their card or cancel a subscription */
+export async function manageSubscription() {
+  if (!isLive) redirect("/account");
+  const supabase = await userClient();
+  const { data: auth } = await supabase.auth.getUser();
+  if (!auth.user) redirect("/account");
+  const { data: profile } = await supabase.from("profiles").select("stripe_customer_id").eq("id", auth.user.id).maybeSingle();
+  if (!profile?.stripe_customer_id) redirect("/account?error=no-subscription");
+  let url: string;
+  try {
+    const portal = await stripe().billingPortal.sessions.create({ customer: profile.stripe_customer_id, return_url: `${siteUrl}/account` });
+    url = portal.url;
+  } catch {
+    redirect("/account?error=portal");
+  }
+  redirect(url);
 }
