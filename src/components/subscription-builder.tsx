@@ -57,7 +57,7 @@ export function SubscriptionBuilder({ products }: { products: Product[] }) {
                 <input type="radio" name="coffee" value={p.slug} checked={p.id === product.id} onChange={() => setSlug(p.slug)} className="sr-only" />
                 <BagArt product={p} className="h-auto w-10 shrink-0 transition group-hover:-rotate-3" />
                 <span className="min-w-0">
-                  <span className="block font-display text-[1.05rem] leading-tight">{p.name}</span>
+                  <span className="block break-words font-display text-[0.95rem] leading-tight sm:text-[1.05rem]">{p.name}</span>
                   <span className="text-xs text-muted">{p.roast[0].toUpperCase() + p.roast.slice(1)} · {formatGBP(unitPrice(p, "250g", true))}</span>
                 </span>
               </label>

@@ -1,14 +1,16 @@
 import clsx from "clsx";
 import type { ButtonHTMLAttributes } from "react";
 
-type Variant = "primary" | "dark" | "outline" | "ghost";
+type Variant = "primary" | "dark" | "outline" | "ghost" | "light";
 type Size = "sm" | "md" | "lg";
 
 const variants: Record<Variant, string> = {
-  primary: "bg-ember text-white hover:bg-ember-dark shadow-[0_8px_20px_-8px_rgb(200_90_42/0.7)]",
+  primary: "bg-ember text-white shadow-glow hover:bg-ember-dark hover:-translate-y-0.5",
   dark: "bg-espresso text-cream hover:bg-roast",
   outline: "border border-espresso/25 text-espresso hover:border-espresso hover:bg-espresso/[0.04]",
   ghost: "text-espresso hover:bg-espresso/[0.06]",
+  /* on dark sections */
+  light: "border border-cream/25 text-cream backdrop-blur hover:border-cream hover:bg-cream/10",
 };
 const sizes: Record<Size, string> = {
   sm: "h-9 px-4 text-sm",

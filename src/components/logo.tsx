@@ -16,7 +16,7 @@ export function Logo({ className, light = false }: { className?: string; light?:
     <span className={clsx("inline-flex items-center gap-2.5", className)}>
       <Mark className="h-8 w-8 shrink-0" />
       <span className="flex flex-col leading-none">
-        <span className={clsx("font-display text-[1.35rem] font-medium tracking-tight", light ? "text-cream" : "text-espresso")}>Cinderfield</span>
+        <span className={clsx("font-display text-[1.3rem] font-semibold tracking-[-0.03em]", light ? "text-cream" : "text-espresso")}>Cinderfield</span>
         <span className={clsx("mt-0.5 text-[0.55rem] font-semibold tracking-[0.28em]", light ? "text-cream/60" : "text-muted")}>COFFEE ROASTERS</span>
       </span>
     </span>

@@ -1,29 +1,38 @@
 @import "tailwindcss";
 
-/* Cinderfield: warm paper, espresso ink and an ember accent */
+/*
+ * Cinderfield: a dark-roast palette. Oat paper and near-black espresso, with an ember accent
+ * that glows like a coal. Each coffee brings its own colours from its bag.
+ */
 @theme {
-  --color-paper: #f5efe6;
-  --color-cream: #fbf8f3;
-  --color-sand: #ece3d5;
-  --color-espresso: #2a1c15;
-  --color-roast: #4a3428;
-  --color-muted: #6f6058;
-  --color-ember: #c85a2a;
-  --color-ember-dark: #a8461c;
-  --color-sage: #6f7d5c;
-  --color-line: rgb(42 28 21 / 0.12);
+  --color-paper: #f4f1ec;
+  --color-cream: #fcfbf8;
+  --color-sand: #e9e3da;
+  --color-espresso: #16100c;
+  --color-roast: #3e3129;
+  --color-muted: #6f645c;
+  --color-ember: #d9480f;
+  --color-ember-dark: #b23a0a;
+  --color-glow: #ff7a2e;
+  --color-crema: #f2c48d;
+  --color-sage: #5f7a52;
+  --color-line: rgb(22 16 12 / 0.1);
 
-  --font-display: var(--font-fraunces), "Iowan Old Style", Georgia, serif;
+  --font-display: var(--font-bricolage), "Helvetica Neue", Arial, sans-serif;
+  --font-serif: var(--font-instrument-serif), "Iowan Old Style", Georgia, serif;
   --font-sans: var(--font-instrument), "Helvetica Neue", Arial, sans-serif;
 
-  --radius-card: 1.25rem;
-  --shadow-soft: 0 1px 2px rgb(42 28 21 / 0.06), 0 12px 32px -12px rgb(42 28 21 / 0.18);
-  --shadow-lift: 0 2px 4px rgb(42 28 21 / 0.08), 0 28px 60px -20px rgb(42 28 21 / 0.35);
+  --radius-card: 1.5rem;
+  --shadow-soft: 0 1px 2px rgb(22 16 12 / 0.05), 0 14px 36px -16px rgb(22 16 12 / 0.2);
+  --shadow-lift: 0 2px 4px rgb(22 16 12 / 0.06), 0 34px 70px -24px rgb(22 16 12 / 0.38);
+  --shadow-glow: 0 10px 30px -10px rgb(217 72 15 / 0.65);
 
   --animate-drift: drift 9s ease-in-out infinite;
-  --animate-rise: rise 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  --animate-rise: rise 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) both;
   --animate-marquee: marquee 38s linear infinite;
   --animate-steam: steam 3.6s ease-in-out infinite;
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-spark: spark 4.5s ease-in infinite;
 }
 
 @keyframes drift {
@@ -31,7 +40,7 @@
   50% { transform: translate3d(0, -14px, 0) rotate(calc(var(--r, 0deg) + 8deg)); }
 }
 @keyframes rise {
-  from { opacity: 0; transform: translateY(18px); }
+  from { opacity: 0; transform: translateY(22px); }
   to { opacity: 1; transform: none; }
 }
 @keyframes marquee {
@@ -42,11 +51,41 @@
   40% { opacity: 0.55; }
   100% { opacity: 0; transform: translateY(-26px) scaleY(1.15); }
 }
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+/* a cinder drifting up and fading out */
+@keyframes spark {
+  0% { opacity: 0; transform: translate3d(0, 0, 0) scale(1); }
+  15% { opacity: 1; }
+  100% { opacity: 0; transform: translate3d(var(--dx, 12px), -180px, 0) scale(0.4); }
+}
+@keyframes cup-turn {
+  to { transform: rotate(360deg); }
+}
+@keyframes cup-stir {
+  from { transform: rotate(-38deg); }
+  to { transform: rotate(38deg); }
+}
+@keyframes cup-ripple {
+  0% { transform: scale(1); opacity: 0.7; }
+  100% { transform: scale(6.2); opacity: 0; }
+}
+@keyframes reveal-up {
+  from { opacity: 0; transform: translateY(48px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes word-in {
+  from { opacity: 0; transform: translateY(0.45em) rotate(2deg); filter: blur(6px); }
+  to { opacity: 1; transform: none; filter: none; }
+}
 
 @layer base {
   html {
     color-scheme: light;
     -webkit-tap-highlight-color: transparent;
+    scroll-behavior: smooth;
   }
   body {
     background: var(--color-paper);
@@ -57,9 +96,23 @@
   }
   h1, h2, h3 {
     font-family: var(--font-display);
-    font-weight: 500;
-    letter-spacing: -0.015em;
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    line-height: 1.02;
+    font-stretch: 94%;
     text-wrap: balance;
+  }
+  h3 {
+    letter-spacing: -0.02em;
+    font-stretch: 100%;
+  }
+  /* an italic serif word inside a heading, for warmth */
+  :is(h1, h2, h3, .display) em {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+    font-stretch: 100%;
+    letter-spacing: -0.01em;
   }
   ::selection {
     background: var(--color-ember);
@@ -79,15 +132,22 @@
   .container-x {
     margin-inline: auto;
     width: 100%;
-    max-width: 76rem;
+    max-width: 78rem;
     padding-inline: max(1.25rem, env(safe-area-inset-left));
   }
   .eyebrow {
     font-size: 0.75rem;
     font-weight: 600;
-    letter-spacing: 0.14em;
+    letter-spacing: 0.16em;
     text-transform: uppercase;
     color: var(--color-ember);
+  }
+  .display {
+    font-family: var(--font-display);
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    line-height: 0.96;
+    font-stretch: 92%;
   }
   /* long-form text: delivery, privacy, terms */
   .prose-cf {
@@ -98,7 +158,7 @@
   }
   .prose-cf h2 {
     margin-top: 2.75rem;
-    font-size: 1.75rem;
+    font-size: 1.85rem;
     line-height: 1.2;
     color: var(--color-espresso);
   }
@@ -142,6 +202,48 @@
   }
   .grain {
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.16 0 0 0 0 0.11 0 0 0 0 0.08 0 0 0 .5 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.35'/%3E%3C/svg%3E");
+  }
+  /* the dark, glowing sections */
+  .roastery {
+    background:
+      radial-gradient(60% 70% at 78% 30%, rgb(217 72 15 / 0.32), transparent 70%),
+      radial-gradient(40% 50% at 12% 90%, rgb(242 196 141 / 0.12), transparent 70%),
+      var(--color-espresso);
+    color: var(--color-cream);
+  }
+  .glass {
+    background: rgb(252 251 248 / 0.72);
+    backdrop-filter: blur(18px) saturate(1.4);
+    -webkit-backdrop-filter: blur(18px) saturate(1.4);
+  }
+  .text-glow {
+    background: linear-gradient(100deg, var(--color-crema), var(--color-glow) 45%, var(--color-ember));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  /* a heading whose words rise in one after another */
+  .words > span {
+    display: inline-block;
+    animation: word-in 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+    animation-delay: calc(var(--i, 0) * 70ms + 80ms);
+  }
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* Sections slide up as they scroll into view, where the browser supports scroll-driven animations */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .reveal {
+      animation: reveal-up linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 55%;
+    }
   }
 }
 

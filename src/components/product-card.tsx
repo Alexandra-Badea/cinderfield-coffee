@@ -12,7 +12,7 @@ export function ProductCard({ product, rating, priority = false }: { product: Pr
   return (
     <article className="group relative flex flex-col">
       <Tilt className="relative" max={7}>
-        <div className="relative overflow-hidden rounded-card bg-sand/70 px-8 pb-5 pt-9 transition-shadow duration-300 group-hover:shadow-lift" style={{ background: `radial-gradient(120% 90% at var(--gx,50%) var(--gy,30%), ${product.art.bag}66, transparent 70%), var(--color-sand)` }}>
+        <div className="relative overflow-hidden rounded-[2rem] bg-sand/70 px-8 pb-5 pt-9 transition-shadow duration-300 group-hover:shadow-lift" style={{ background: `radial-gradient(120% 90% at var(--gx,50%) var(--gy,30%), ${product.art.bag}66, transparent 70%), var(--color-sand)` }}>
           <Link href={`/coffee/${product.slug}`} prefetch={priority} tabIndex={-1} aria-hidden="true" className="absolute inset-0 z-0" />
           <BagArt product={product} className="pointer-events-none relative mx-auto h-auto w-full max-w-[220px] drop-shadow-[0_18px_22px_rgba(42,28,21,0.18)] transition-transform duration-500 [transform:translateZ(40px)] group-hover:-translate-y-1" />
           <div className="pointer-events-none absolute left-4 top-4 flex flex-wrap gap-1.5">
