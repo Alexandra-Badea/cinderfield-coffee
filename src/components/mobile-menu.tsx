@@ -33,7 +33,7 @@ export function MobileMenu({ links }: { links: { href: string; label: string }[]
   }, [open]);
 
   return (
-    <div className="md:hidden">
+    <div className="lg:hidden">
       <button type="button" onClick={() => setOpenOn(pathname)} className="grid h-11 w-11 place-items-center rounded-full hover:bg-espresso/[0.06]" aria-expanded={open} aria-controls="mobile-menu" aria-label="Open menu">
         <Menu className="h-5 w-5" />
       </button>

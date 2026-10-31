@@ -13,11 +13,11 @@ export function Mark({ className }: { className?: string }) {
 
 export function Logo({ className, light = false }: { className?: string; light?: boolean }) {
   return (
-    <span className={clsx("inline-flex items-center gap-2.5", className)}>
-      <Mark className="h-8 w-8 shrink-0" />
+    <span className={clsx("inline-flex items-center gap-2 whitespace-nowrap min-[380px]:gap-2.5", className)}>
+      <Mark className="h-7 w-7 shrink-0 min-[380px]:h-8 min-[380px]:w-8" />
       <span className="flex flex-col leading-none">
-        <span className={clsx("font-display text-[1.3rem] font-semibold tracking-[-0.03em]", light ? "text-cream" : "text-espresso")}>Cinderfield</span>
-        <span className={clsx("mt-0.5 text-[0.55rem] font-semibold tracking-[0.28em]", light ? "text-cream/60" : "text-muted")}>COFFEE ROASTERS</span>
+        <span className={clsx("font-display text-[1.15rem] font-semibold tracking-[-0.03em] min-[380px]:text-[1.3rem]", light ? "text-cream" : "text-espresso")}>Cinderfield</span>
+        <span className={clsx("mt-0.5 text-[0.5rem] font-semibold tracking-[0.24em] min-[380px]:text-[0.55rem] min-[380px]:tracking-[0.28em]", light ? "text-cream/60" : "text-muted")}>COFFEE ROASTERS</span>
       </span>
     </span>
   );

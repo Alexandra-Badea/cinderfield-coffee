@@ -12,11 +12,15 @@ export function DemoBanner() {
         <span className="font-semibold text-cream">Demo store.</span>{" "}
         {hasStripe ? (
           <>
-            Payments are in test mode and orders aren&apos;t shipped. Try it with the card{" "}
+            <span className="hidden sm:inline">Payments are in test mode and orders aren&apos;t shipped. Try it with the card </span>
+            <span className="sm:hidden">Test card </span>
             <span className="whitespace-nowrap font-semibold tabular-nums text-cream">4242 4242 4242 4242</span>.
           </>
         ) : (
-          "Orders aren't shipped and no payment is taken."
+          <>
+            <span className="hidden min-[420px]:inline">Orders aren&apos;t shipped and no payment is taken.</span>
+            <span className="min-[420px]:hidden">No real orders or payments.</span>
+          </>
         )}
       </p>
     </div>
