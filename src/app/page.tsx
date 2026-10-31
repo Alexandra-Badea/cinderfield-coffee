@@ -50,16 +50,16 @@ export default async function Home() {
       {/* Hero: slides up under the floating header */}
       <section className="roastery relative -mt-[4.125rem] overflow-hidden pt-[4.125rem] sm:-mt-[4.875rem] sm:pt-[4.875rem]">
         <div className="grain pointer-events-none absolute inset-0 opacity-30" aria-hidden="true" />
-        <div className="container-x pointer-events-none relative z-10 grid items-center pb-2 pt-10 lg:min-h-[min(820px,92svh)] lg:grid-cols-[1fr_1.08fr] lg:pb-16 lg:pt-6">
-          <div className="pointer-events-auto relative max-w-[36rem]">
-            <p className="inline-flex animate-rise items-center gap-2.5 rounded-full border border-cream/15 bg-cream/5 px-3.5 py-1.5 text-sm text-cream/80 backdrop-blur">
+        <div className="container-x pointer-events-none relative z-10 grid items-center pb-2 pt-10 lg:min-h-[min(51.25rem,92svh)] lg:grid-cols-[1fr_1.08fr] lg:pb-16 lg:pt-6">
+          <div data-hero-copy className="pointer-events-auto relative max-w-[36rem]">
+            <p className="inline-flex animate-rise items-center gap-2.5 rounded-full border border-cream/15 bg-cream/5 whitespace-nowrap px-3.5 py-1.5 text-[0.8rem] text-cream/80 backdrop-blur min-[380px]:text-sm">
               <span className="relative flex h-2 w-2" aria-hidden="true">
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-glow opacity-75" />
                 <span className="relative inline-flex h-2 w-2 rounded-full bg-glow" />
               </span>
               This week&apos;s roast posts on Wednesday
             </p>
-            <h1 className="display words mt-6 text-[2.9rem] text-cream sm:text-7xl lg:text-[5.5rem]">
+            <h1 className="display words mt-6 text-[2.9rem] text-cream sm:text-7xl lg:text-[5.5rem] [@media(max-height:520px)]:text-5xl">
               <Words text="Roasted on Tuesday." />
               <span style={{ ["--i" as string]: 3 }}>
                 <em className="text-glow pr-1">In your cup</em>&nbsp;
@@ -96,9 +96,10 @@ export default async function Home() {
 
       {/* Promises, scrolling */}
       <section aria-label="Our promises" className="overflow-hidden bg-ember py-4 text-white sm:py-5">
-        <div className="flex w-max animate-marquee gap-10 whitespace-nowrap pr-10 motion-reduce:animate-none">
+        {/* with motion turned off it stands still, wrapped, so every promise can be read */}
+        <div className="flex w-max animate-marquee gap-10 whitespace-nowrap pr-10 motion-reduce:w-auto motion-reduce:animate-none motion-reduce:flex-wrap motion-reduce:justify-center motion-reduce:gap-x-10 motion-reduce:gap-y-2 motion-reduce:whitespace-normal motion-reduce:px-5 motion-reduce:text-center">
           {[...promises, ...promises].map((p, i) => (
-            <span key={i} className="flex items-center gap-10 font-display text-xl font-semibold tracking-[-0.02em] sm:text-2xl" aria-hidden={i >= promises.length}>
+            <span key={i} className={`flex items-center gap-10 font-display text-xl font-semibold tracking-[-0.02em] sm:text-2xl ${i >= promises.length ? "motion-reduce:hidden" : ""}`} aria-hidden={i >= promises.length}>
               {p}
               <svg viewBox="0 0 30 40" className="h-5 w-4 opacity-70" aria-hidden="true">
                 <ellipse cx="15" cy="20" rx="12" ry="17" fill="currentColor" />
@@ -140,7 +141,7 @@ export default async function Home() {
           </h2>
         </div>
         <div className="reveal mt-10 grid gap-4 md:grid-cols-4 md:grid-rows-2">
-          <Link href="/finder" className="roastery group relative flex min-h-[320px] flex-col justify-between overflow-hidden rounded-[2rem] p-7 md:col-span-2 md:row-span-2 md:p-10">
+          <Link href="/finder" className="roastery group relative flex min-h-[20rem] flex-col justify-between overflow-hidden rounded-[2rem] p-7 md:col-span-2 md:row-span-2 md:p-10">
             <div className="grain pointer-events-none absolute inset-0 opacity-30" aria-hidden="true" />
             <div className="relative">
               <p className="eyebrow text-crema">Coffee finder</p>
@@ -162,7 +163,7 @@ export default async function Home() {
           {flavours.map(({ key, label, note, icon: Icon, tint, ink }) => {
             const n = products.filter((p) => p.flavour.includes(key)).length;
             return (
-              <Link key={key} href={`/shop?flavour=${key}`} className="group relative flex min-h-[150px] flex-col justify-between overflow-hidden rounded-[2rem] p-6 transition duration-300 hover:-translate-y-1 hover:shadow-lift" style={{ background: tint, color: ink }}>
+              <Link key={key} href={`/shop?flavour=${key}`} className="group relative flex min-h-[9.375rem] flex-col justify-between overflow-hidden rounded-[2rem] p-6 transition duration-300 hover:-translate-y-1 hover:shadow-lift" style={{ background: tint, color: ink }}>
                 <Icon className="absolute -right-3 -top-3 h-28 w-28 opacity-15 transition duration-500 group-hover:rotate-12 group-hover:scale-110" aria-hidden="true" />
                 <Icon className="h-7 w-7" aria-hidden="true" />
                 <div>
@@ -259,10 +260,11 @@ export default async function Home() {
               </p>
             )}
           </div>
-          <div className="group mt-10 overflow-hidden [mask-image:linear-gradient(90deg,transparent,black_6%,black_94%,transparent)]">
-            <ul className="flex w-max animate-marquee gap-5 pr-5 [animation-duration:60s] group-hover:[animation-play-state:paused] motion-reduce:animate-none">
+          {/* with motion turned off the reviews stand still as a row you can swipe or scroll */}
+          <div className="group mt-10 overflow-hidden [mask-image:linear-gradient(90deg,transparent,black_6%,black_94%,transparent)] motion-reduce:snap-x motion-reduce:snap-mandatory motion-reduce:overflow-x-auto motion-reduce:pb-4 motion-reduce:[mask-image:none]">
+            <ul className="flex w-max animate-marquee gap-5 pr-5 [animation-duration:60s] group-hover:[animation-play-state:paused] motion-reduce:animate-none motion-reduce:px-5">
               {[...best, ...best].map((r, i) => (
-                <li key={`${r.id}-${i}`} aria-hidden={i >= best.length} className="flex w-[300px] shrink-0 flex-col rounded-[1.75rem] bg-cream p-6 shadow-soft sm:w-[360px]">
+                <li key={`${r.id}-${i}`} aria-hidden={i >= best.length} className={`flex w-[300px] shrink-0 snap-start flex-col rounded-[1.75rem] bg-cream p-6 shadow-soft sm:w-[22.5rem] ${i >= best.length ? "motion-reduce:hidden" : ""}`}>
                   <Stars rating={r.rating} />
                   <blockquote className="mt-4 flex-1 text-lg leading-snug">&ldquo;{r.body}&rdquo;</blockquote>
                   <p className="mt-5 text-sm text-muted">

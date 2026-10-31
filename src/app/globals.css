@@ -87,6 +87,13 @@
     -webkit-tap-highlight-color: transparent;
     scroll-behavior: smooth;
   }
+  /* Past 1920px the whole design grows with the screen (to 22px a rem at about 2640px), so a big monitor
+     sees the same composition as a laptop instead of a narrow column. It starts from the visitor's own font size. */
+  @media (min-width: 1920px) {
+    html {
+      font-size: min(calc(100% + (100vw - 1920px) * 0.00833), 137.5%);
+    }
+  }
   body {
     background: var(--color-paper);
     color: var(--color-espresso);

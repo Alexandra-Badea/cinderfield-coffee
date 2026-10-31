@@ -14,6 +14,11 @@ import { createSpin, spinHandlers, stepSpin, type Spin } from "./spin";
  * Drag to spin the middle bag, click it to open that coffee. The scene turns gently toward the pointer.
  * It stops drawing when scrolled out of view.
  */
+/** How far the camera sits on large screens, and how wide the three bags and their beans are, in scene units */
+const WIDE_DISTANCE = 12;
+const TRIO_WIDTH = 6.4;
+const TRIO_HEIGHT = 3.4;
+
 export default function HeroScene({ bags, onReady }: { bags: BagProduct[]; onReady: () => void }) {
   const wrap = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(true);
@@ -46,18 +51,44 @@ export default function HeroScene({ bags, onReady }: { bags: BagProduct[]; onRea
 function Scene({ bags, spin }: { bags: BagProduct[]; spin: Spin }) {
   const router = useRouter();
   const size = useThree((s) => s.size);
+  const canvas = useThree((s) => s.gl.domElement);
   const narrow = size.width < 640;
   // on large screens the canvas fills the hero and the bags sit to the right of the text
   const wide = size.width >= 1024;
   const group = useRef<THREE.Group>(null);
   const centre = useRef<THREE.Group>(null);
+  const place = useRef({ x: 0, scale: 1 });
   const [left, middle, right] = bags;
+
+  // On large screens, centre the bags in the space beside the text and shrink them if that space is tight,
+  // so they never sit on the words, whatever the window's shape
+  useEffect(() => {
+    const copy = document.querySelector<HTMLElement>("[data-hero-copy]");
+    const measure = () => {
+      const c = canvas.getBoundingClientRect();
+      if (!wide || !copy || !c.width) return void (place.current = { x: 0, scale: 1 });
+      const r = copy.getBoundingClientRect();
+      const from = r.right - c.left + 32; // just past the text
+      const to = c.width - Math.max(32, r.left - c.left); // as far in from the right edge as the text is from the left
+      const perPx = (2 * Math.tan(THREE.MathUtils.degToRad(15)) * WIDE_DISTANCE) / c.height; // world units per pixel at the bags
+      const fitWidth = ((to - from) * perPx) / TRIO_WIDTH;
+      const fitHeight = (c.height * perPx * 0.6) / TRIO_HEIGHT; // the bags never take more than 60% of the hero's height
+      place.current = { x: ((from + to) / 2 - c.width / 2) * perPx, scale: THREE.MathUtils.clamp(Math.min(fitWidth, fitHeight, c.width >= 1920 ? 1.4 : 1.05), 0.6, 1.4) };
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    if (copy) ro.observe(copy);
+    ro.observe(canvas);
+    return () => ro.disconnect();
+  }, [canvas, wide, size.width, size.height]);
 
   useFrame((state, dt) => {
     // pull back on narrow screens so all three bags fit
-    state.camera.position.z = THREE.MathUtils.damp(state.camera.position.z, narrow ? 13.5 : wide ? 12 : 10, 4, dt);
+    state.camera.position.z = THREE.MathUtils.damp(state.camera.position.z, narrow ? 13.5 : wide ? WIDE_DISTANCE : 10, 4, dt);
     const g = group.current;
     if (g) {
+      g.position.x = THREE.MathUtils.damp(g.position.x, place.current.x, 5, dt);
+      g.scale.setScalar(THREE.MathUtils.damp(g.scale.x, place.current.scale, 5, dt));
       g.rotation.y = THREE.MathUtils.damp(g.rotation.y, state.pointer.x * 0.2, 2.5, dt);
       g.rotation.x = THREE.MathUtils.damp(g.rotation.x, -state.pointer.y * 0.06, 2.5, dt);
     }
@@ -77,7 +108,7 @@ function Scene({ bags, spin }: { bags: BagProduct[]; spin: Spin }) {
         <Lightformer form="rect" intensity={1} position={[6, 1, 2]} rotation-y={-Math.PI / 2} scale={[4, 6, 1]} />
       </Environment>
 
-      <group ref={group} position={[wide ? 2.05 : 0, wide ? -0.1 : 0, 0]}>
+      <group ref={group} position={[0, wide ? -0.1 : 0, 0]}>
         {left && (
           <Float speed={1.3} rotationIntensity={0.25} floatIntensity={0.7}>
             <Bag product={left} position={[-side, -0.25, -0.9]} rotation={[0, 0.55, 0.07]} scale={0.86} />
