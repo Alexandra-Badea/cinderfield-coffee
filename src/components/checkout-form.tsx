@@ -15,7 +15,7 @@ import type { DiscountCode, Order } from "@/lib/types";
 
 const field = "h-12 w-full rounded-2xl border border-line bg-paper px-4 outline-none transition focus:border-espresso/50";
 
-/** Demo checkout: the server prices the order exactly as it would for Stripe, but no payment is taken */
+/** Checkout before payments are switched on: the server prices the order exactly as it would for Stripe, but nothing is charged */
 export function CheckoutForm() {
   const router = useRouter();
   const { lines, products, ready, code, method, clear } = useCart();
@@ -67,7 +67,7 @@ export function CheckoutForm() {
       <div className="space-y-6">
         <p className="flex gap-3 rounded-2xl bg-sand/70 p-4 text-sm text-roast">
           <Info className="mt-0.5 h-4 w-4 shrink-0 text-ember" aria-hidden="true" />
-          This is a demo shop, so there&apos;s no payment step. With Stripe connected, customers go to Stripe&apos;s secure checkout from the bag instead.
+          Card payments aren&apos;t switched on for this store yet, so placing an order doesn&apos;t charge you.
         </p>
         <fieldset className="space-y-4 rounded-card bg-cream p-6 shadow-soft">
           <legend className="sr-only">Contact</legend>
@@ -75,7 +75,7 @@ export function CheckoutForm() {
           <div>
             <label htmlFor="email" className="mb-1.5 block text-sm font-semibold">Email</label>
             <input id="email" name="email" type="email" required autoComplete="email" className={field} />
-            <p className="mt-1.5 text-xs text-muted">For the order confirmation and delivery updates. In this demo nothing is sent.</p>
+            <p className="mt-1.5 text-xs text-muted">For the order confirmation and delivery updates. We never share your email.</p>
           </div>
           <div>
             <label htmlFor="name" className="mb-1.5 block text-sm font-semibold">Full name</label>
@@ -142,10 +142,10 @@ export function CheckoutForm() {
           <div className="flex justify-between border-t border-line pt-3 text-lg font-semibold"><dt>Total</dt><dd className="tabular-nums">{formatGBP(t.total)}</dd></div>
         </dl>
         <button type="submit" disabled={busy} className={buttonClass("primary", "lg", "w-full")}>
-          <Lock className="h-4 w-4" aria-hidden="true" /> {busy ? "Placing order…" : "Place demo order"}
+          <Lock className="h-4 w-4" aria-hidden="true" /> {busy ? "Placing order…" : "Place order"}
         </button>
         {error && <p role="alert" className="text-sm text-ember">{error}</p>}
-        <p className="text-center text-xs text-muted">No payment is taken in this demo.</p>
+        <p className="text-center text-xs text-muted">No payment is taken: card payments aren&apos;t switched on yet.</p>
       </aside>
     </form>
   );

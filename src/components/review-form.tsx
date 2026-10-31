@@ -10,7 +10,7 @@ export function ReviewForm({ productId, enabled }: { productId: string; enabled:
   return (
     <form action={action} className="space-y-4 rounded-card bg-cream p-6 shadow-soft">
       <h3 className="text-2xl">Write a review</h3>
-      {!enabled && <p className="rounded-xl bg-sand/70 p-3 text-sm text-roast">In this demo, reviews are read-only. With the database connected, signed-in customers can post them here.</p>}
+      {!enabled && <p className="rounded-xl bg-sand/70 p-3 text-sm text-roast">Reviews open once customer accounts are switched on.</p>}
       <input type="hidden" name="productId" value={productId} />
       <fieldset disabled={!enabled}>
         <legend className="mb-2 text-sm font-semibold">Your rating</legend>

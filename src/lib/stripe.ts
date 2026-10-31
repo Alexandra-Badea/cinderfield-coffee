@@ -3,7 +3,7 @@ import Stripe from "stripe";
 
 let client: Stripe | null = null;
 
-/** The Stripe client, created on first use so the demo never needs a key */
+/** The Stripe client, created on first use so the shop runs without a key until payments are switched on */
 export function stripe() {
   if (!client) client = new Stripe(process.env.STRIPE_SECRET_KEY!, { appInfo: { name: "Cinderfield Coffee" } });
   return client;

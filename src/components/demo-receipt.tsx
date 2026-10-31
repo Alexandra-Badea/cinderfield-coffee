@@ -6,7 +6,7 @@ import { buttonClass } from "./ui/button";
 import { useBrowserStore, useHydrated } from "@/lib/browser-store";
 import { demoOrders, lastOrder } from "@/lib/demo-orders";
 
-/** Shows a demo order from this browser (demo orders never leave it) */
+/** Shows an order placed before payments were switched on (those orders stay in this browser) */
 export function DemoReceipt({ id }: { id: string }) {
   const last = useBrowserStore(lastOrder);
   const saved = useBrowserStore(demoOrders);
@@ -25,7 +25,7 @@ export function DemoReceipt({ id }: { id: string }) {
   return (
     <>
       <p className="-mt-4 mb-8 text-lg text-roast">
-        Thanks, {order.name.split(" ")[0]}! A confirmation would go to <strong>{order.email}</strong>. (It&apos;s a demo, so nothing was sent or charged.)
+        Thanks, {order.name.split(" ")[0]}! We&apos;ll send updates to <strong>{order.email}</strong>. No payment was taken.
       </p>
       <OrderReceipt order={order} />
     </>

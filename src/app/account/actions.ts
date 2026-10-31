@@ -9,7 +9,7 @@ export type AuthState = { error?: string; message?: string } | null;
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
 export async function signIn(_prev: AuthState, form: FormData): Promise<AuthState> {
-  if (!hasSupabase) return { error: "Accounts need the database, which isn't connected in this demo." };
+  if (!hasSupabase) return { error: "Customer accounts aren't switched on for this store yet." };
   const email = String(form.get("email") ?? "").trim();
   const password = String(form.get("password") ?? "");
   const supabase = await userClient();
@@ -21,7 +21,7 @@ export async function signIn(_prev: AuthState, form: FormData): Promise<AuthStat
 }
 
 export async function signUp(_prev: AuthState, form: FormData): Promise<AuthState> {
-  if (!hasSupabase) return { error: "Accounts need the database, which isn't connected in this demo." };
+  if (!hasSupabase) return { error: "Customer accounts aren't switched on for this store yet." };
   const name = String(form.get("name") ?? "").trim();
   const email = String(form.get("email") ?? "").trim();
   const password = String(form.get("password") ?? "");

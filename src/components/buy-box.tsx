@@ -98,7 +98,7 @@ export function BuyBox({ product }: { product: Product }) {
                 <option value={2}>2 weeks</option>
                 <option value={4}>4 weeks</option>
               </select>
-              <span className="text-muted">· skip or cancel anytime</span>
+              <span className="text-muted">· change or cancel anytime</span>
             </span>
           )}
         </label>

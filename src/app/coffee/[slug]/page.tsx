@@ -214,7 +214,6 @@ export default async function CoffeePage({ params }: { params: Params }) {
               <p className="mt-3 text-sm font-semibold">{r.author}</p>
             </li>
           ))}
-          {reviews.length > 0 && !hasSupabase && <li className="text-center text-xs text-muted">Sample reviews for this demo shop.</li>}
         </ul>
       </section>
 

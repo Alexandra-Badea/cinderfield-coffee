@@ -18,7 +18,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <p className="mt-6 flex gap-3 rounded-2xl bg-sand/70 p-4 text-sm text-roast">
           <Info className="mt-0.5 h-4 w-4 shrink-0 text-ember" aria-hidden="true" />
           <span>
-            Demo admin: anyone can look around. The orders are a generated month of sales plus any demo orders you placed, and your changes are saved in this browser only. With the database connected, this is locked to admin accounts.
+            Preview admin: there&apos;s no database connected, so anyone can look around. The orders are a generated month of sales plus any orders placed from this browser, and changes are saved in this browser only. With Supabase connected, the admin is locked to admin accounts.
           </span>
         </p>
       )}

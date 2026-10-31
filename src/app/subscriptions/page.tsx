@@ -1,34 +1,33 @@
 import type { Metadata } from "next";
-import Link from "next/link";
-import { CalendarClock, Flame, Mail, PackageOpen, PauseCircle, PiggyBank, Truck } from "lucide-react";
+import { CalendarClock, Flame, PackageOpen, PiggyBank, RefreshCw, SlidersHorizontal, Truck } from "lucide-react";
 import { SubscriptionBuilder } from "@/components/subscription-builder";
 import { getProducts } from "@/lib/catalog";
 import { shop } from "@/lib/config";
 
 export const metadata: Metadata = {
   title: "Coffee subscriptions",
-  description: `Any coffee, roasted fresh and posted every 2 or 4 weeks. ${shop.subscriptionDiscount}% off every bag and free delivery. Skip, swap or cancel anytime.`,
+  description: `Any coffee, roasted fresh and posted every 2 or 4 weeks. ${shop.subscriptionDiscount}% off every bag and free delivery. Change or cancel anytime.`,
 };
 
 const perks = [
   { icon: PiggyBank, t: `${shop.subscriptionDiscount}% off every bag`, d: "For as long as you subscribe." },
   { icon: Truck, t: "Free delivery", d: "On every order, whatever the size." },
-  { icon: PauseCircle, t: "Skip, swap or cancel", d: "From your account, in one click." },
+  { icon: SlidersHorizontal, t: "Change or cancel", d: "Any time, from your account." },
 ];
 
 const timeline = [
   { icon: CalendarClock, t: "Today", d: "Choose your coffee and how often. You pay for the first bag now." },
   { icon: Flame, t: "Tuesday", d: "We roast your coffee in a small batch, with everyone else's." },
   { icon: PackageOpen, t: "Wednesday", d: "Packed in a letterbox-friendly box and posted first class." },
-  { icon: Mail, t: "Then, every 2 or 4 weeks", d: "We email three days before each roast, so there's time to skip or swap." },
+  { icon: RefreshCw, t: "Then, every 2 or 4 weeks", d: "We roast and post your next bag automatically, with a receipt each time." },
 ];
 
 const faqs = [
   { q: "When am I charged?", a: "Your first bag is paid at checkout. After that, your card is charged every 2 or 4 weeks from that day, just before the next roast. No fees and no minimum term." },
-  { q: "Can I change my coffee?", a: "Yes. Swap to any coffee in the shop before Monday night and the next delivery will be the new one. Changing size, grind or frequency works the same way." },
-  { q: "What if I'm away?", a: "Skip a single delivery or pause for as long as you like from your account. We'll email you before we start again." },
-  { q: "How do I cancel?", a: "From your account, any time, without phoning or emailing anyone. If a bag has already been roasted, it still goes out; nothing after that." },
-  { q: "Can I give a subscription as a gift?", a: "Gift subscriptions of 3, 6 or 12 deliveries are coming soon. Until then, you can add a gift address at checkout." },
+  { q: "Can I change my coffee or how often it comes?", a: "Yes. Email us before Monday night and we'll switch the next delivery to any coffee in the shop, or change the size, grind or frequency." },
+  { q: "How do I update my card or cancel?", a: "From your account: Manage subscription opens a secure page from Stripe, our payment provider, where you can update your card or cancel in a couple of clicks. No phone calls, no forms." },
+  { q: "What if I'm away?", a: "Email us the dates and we'll pause your deliveries until you're back." },
+  { q: "Can I give a subscription as a gift?", a: "Gift subscriptions of 3, 6 or 12 deliveries are coming soon. Until then, you can send any order to a different address at checkout." },
 ];
 
 export default async function SubscriptionsPage() {
@@ -81,9 +80,6 @@ export default async function SubscriptionsPage() {
           <h2 id="faq-title" className="text-3xl md:text-4xl">Questions, answered</h2>
           <p className="mt-4 text-roast">
             Anything else? Email <a href={`mailto:${shop.email}`} className="font-semibold underline decoration-line underline-offset-2">{shop.email}</a> and a real person will reply.
-          </p>
-          <p className="mt-4 text-sm text-muted">
-            This is a demo shop: subscriptions run through Stripe in test mode when it&apos;s connected. <Link href="/about-this-demo" className="underline underline-offset-2">How it works</Link>.
           </p>
         </div>
         <div className="divide-y divide-line border-y border-line">

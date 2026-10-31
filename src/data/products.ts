@@ -1,8 +1,8 @@
 import type { Product } from "@/lib/types";
 
 /**
- * The catalogue used in demo mode, and the seed for the database (supabase/seed.sql is generated from it).
- * Cinderfield is a made-up roastery: these coffees, farms and prices are examples.
+ * The starting catalogue: shown when no database is connected, and the seed for the database
+ * (supabase/seed.sql is generated from it). Edit these to the roaster's own coffees.
  */
 export const products: Product[] = [
   {

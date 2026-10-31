@@ -1,16 +1,28 @@
 import type { Grind, ShippingMethod, Size } from "./types";
 
 /**
- * The shop runs in one of two modes:
- * - demo: no keys needed. The catalogue comes from src/data, orders are kept in the browser,
- *   and checkout skips payment. Good for previews and for trying the shop.
- * - live: Supabase stores products, accounts and orders, and Stripe takes payment (test mode).
+ * What the shop is connected to decides how it runs:
+ * - Nothing: the catalogue comes from src/data, orders are kept in the browser and checkout takes no payment.
+ *   Handy for local work and previews.
+ * - Supabase: products, accounts, reviews and orders live in the database.
+ * - Supabase and Stripe: checkout takes payment through Stripe.
+ *
+ * Supabase keys work under either naming: the newer publishable/secret keys or the older anon/service-role keys
+ * (which is what the Vercel integration adds).
  */
-export const hasSupabase = Boolean(
-  process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-);
-export const hasStripe = Boolean(process.env.STRIPE_SECRET_KEY && process.env.STRIPE_WEBHOOK_SECRET);
-export const isLive = hasSupabase && hasStripe && Boolean(process.env.SUPABASE_SERVICE_ROLE_KEY);
+export const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
+export const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
+export const supabaseSecret = process.env.SUPABASE_SECRET_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY || "";
+
+export const hasSupabase = Boolean(supabaseUrl && supabaseKey);
+export const hasStripe = Boolean(process.env.STRIPE_SECRET_KEY);
+export const isLive = hasSupabase && hasStripe && Boolean(supabaseSecret);
+
+/**
+ * Real money changes hands only with live Stripe keys. Until then the site shows a one-line
+ * "demo store" notice and asks search engines not to index it.
+ */
+export const takesRealPayments = /^(sk|rk)_live_/.test(process.env.STRIPE_SECRET_KEY ?? "");
 
 /** The public address, for links in emails, Stripe redirects and social previews. Vercel provides one automatically. */
 export const siteUrl = (
@@ -18,16 +30,14 @@ export const siteUrl = (
   (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : "http://localhost:3000")
 ).replace(/\/$/, "");
 
-/** Where the code lives, linked from the About this demo page */
-export const repoUrl = "https://github.com/Alexandra-Badea/cinderfield-coffee";
-
 export const shop = {
   name: "Cinderfield Coffee Roasters",
   short: "Cinderfield",
   currency: "gbp",
   freeShippingFrom: 3500,
   subscriptionDiscount: 10,
-  email: "hello@cinderfield.example",
+  /** Shown on the help pages and in emails. Set SHOP_EMAIL to the shop's real address. */
+  email: process.env.SHOP_EMAIL || "hello@cinderfield.example",
 };
 
 export const shipping: Record<ShippingMethod, { label: string; price: number; eta: string }> = {

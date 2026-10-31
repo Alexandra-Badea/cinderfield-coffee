@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Logo } from "./logo";
 import { NewsletterForm } from "./newsletter-form";
+import { shop } from "@/lib/config";
 
 const columns = [
   {
@@ -16,18 +17,18 @@ const columns = [
   {
     title: "Help",
     links: [
+      { href: "/account", label: "Your account" },
       { href: "/shipping", label: "Delivery & returns" },
       { href: "/brew-guides", label: "Brew guides" },
-      { href: "/privacy", label: "Privacy" },
-      { href: "/terms", label: "Terms" },
+      { href: `mailto:${shop.email}`, label: "Contact us" },
     ],
   },
   {
-    title: "Account",
+    title: "Cinderfield",
     links: [
-      { href: "/account", label: "Your orders" },
-      { href: "/admin", label: "Shop admin (demo)" },
-      { href: "/about-this-demo", label: "About this demo" },
+      { href: "/#story", label: "Our roastery" },
+      { href: "/privacy", label: "Privacy" },
+      { href: "/terms", label: "Terms" },
     ],
   },
 ];
@@ -67,7 +68,7 @@ export function Footer() {
       </div>
       <div className="border-t border-cream/10">
         <div className="container-x flex flex-col gap-2 py-6 text-sm text-cream/55 sm:flex-row sm:items-center sm:justify-between">
-          <p>© 2026 Cinderfield Coffee Roasters, a made-up shop for a portfolio.</p>
+          <p>© 2026 {shop.name}</p>
           <p>
             Designed and built by{" "}
             <a href="https://pagesbyalexa.com" className="font-semibold text-cream/85 underline decoration-cream/30 underline-offset-2 hover:text-white">

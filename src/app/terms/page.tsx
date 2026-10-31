@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { InfoPage } from "@/components/info-page";
-import { shop } from "@/lib/config";
+import { shipping, shop } from "@/lib/config";
+import { formatGBP } from "@/lib/pricing";
 
 export const metadata: Metadata = {
   title: "Terms",
-  description: "The terms for using this demo shop.",
+  description: "The terms for buying coffee and subscriptions from us.",
 };
 
 export default function TermsPage() {
@@ -13,29 +14,42 @@ export default function TermsPage() {
     <InfoPage
       eyebrow="Help"
       title="Terms"
-      intro="The short version: this is a portfolio project. Nothing here is for sale, and nothing you do here creates a contract."
-      updated="30 October 2026"
+      intro={`The terms for buying from ${shop.name}. We've kept them short and plain; if anything is unclear, just ask.`}
+      updated="31 October 2026"
     >
-      <h2>A demo, not a shop</h2>
+      <h2>Ordering</h2>
       <p>
-        Cinderfield Coffee Roasters doesn&apos;t exist. The coffees, farms, prices, reviews and people in the admin are examples written for this demo. Orders are never fulfilled and, in demo mode, nobody is charged. When the shop runs in live mode, Stripe is used in <strong>test mode</strong> only, with test cards.
+        When you place an order you&apos;ll get an email receipt, and if you have an account the order appears there too. Your order is accepted when we take payment. If we can&apos;t fill an order (for example if a coffee sells out after you&apos;ve ordered it), we&apos;ll tell you straight away and refund anything you&apos;ve paid for it.
       </p>
-      <p>Please don&apos;t enter real card details, and use a made-up address if you try the checkout.</p>
 
-      <h2>What a real shop would say here</h2>
-      <p>For anyone using this as a starting point, a UK coffee shop&apos;s terms would usually cover:</p>
-      <ul>
-        <li>who the seller is, with company number and address;</li>
-        <li>how orders are accepted, and that prices include VAT;</li>
-        <li>delivery times and what happens if a parcel is lost (see <Link href="/shipping">delivery &amp; returns</Link>);</li>
-        <li>the 14-day cancellation right for online orders, and why opened food can&apos;t be returned;</li>
-        <li>how subscriptions renew, and how to cancel them at any time;</li>
-        <li>how reviews are moderated.</li>
-      </ul>
-
-      <h2>The code</h2>
+      <h2>Prices</h2>
       <p>
-        The code behind this site is open source under the MIT licence. See <Link href="/about-this-demo">about this demo</Link> for what&apos;s built and how to run it. Questions: <a href={`mailto:${shop.email}`}>{shop.email}</a>.
+        Prices are in pounds sterling and include VAT where it applies. Delivery is added at checkout: {formatGBP(shipping.standard.price)} for standard delivery and {formatGBP(shipping.express.price)} for express, with free standard delivery on orders over {formatGBP(shop.freeShippingFrom)} and on every subscription. Discount codes can&apos;t be combined.
+      </p>
+
+      <h2>Delivery</h2>
+      <p>
+        We roast on Tuesday and post on Wednesday. Delivery times and what to do if something goes wrong are on our <Link href="/shipping">delivery &amp; returns</Link> page. Your order is your responsibility once it has been delivered to the address you gave us.
+      </p>
+
+      <h2>Changing your mind</h2>
+      <p>
+        You can cancel an order for a full refund until it has been roasted. Because coffee is food, we can&apos;t take back bags once they&apos;ve been opened; unopened bags can be returned within 14 days of delivery. This doesn&apos;t affect your rights if something arrives damaged or isn&apos;t what you ordered.
+      </p>
+
+      <h2>Subscriptions</h2>
+      <p>
+        A subscription renews automatically every 2 or 4 weeks at the price shown when you signed up, and we charge your card before each roast. You can cancel at any time from your account, and nothing more will be charged after the current delivery. If we ever need to change the price, we&apos;ll email you at least two weeks before it applies.
+      </p>
+
+      <h2>Reviews</h2>
+      <p>
+        Reviews come from signed-in customers. We don&apos;t edit them, but we remove ones that are abusive, off-topic or about someone else&apos;s product.
+      </p>
+
+      <h2>Contact</h2>
+      <p>
+        Questions, problems or complaints: email <a href={`mailto:${shop.email}`}>{shop.email}</a> and a person will reply, usually the same working day.
       </p>
     </InfoPage>
   );

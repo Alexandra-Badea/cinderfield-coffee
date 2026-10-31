@@ -6,7 +6,7 @@ import { DemoBanner } from "@/components/demo-banner";
 import { Footer } from "@/components/footer";
 import { Header } from "@/components/header";
 import { getProducts } from "@/lib/catalog";
-import { siteUrl } from "@/lib/config";
+import { siteUrl, takesRealPayments } from "@/lib/config";
 import "./globals.css";
 
 const fraunces = localFont({
@@ -32,9 +32,10 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: { default: "Cinderfield Coffee Roasters | Fresh speciality coffee, roasted every Tuesday", template: "%s | Cinderfield Coffee" },
   description:
-    "Small-batch speciality coffee, roasted every Tuesday and posted the next day. Single origins, blends and flexible subscriptions. (A portfolio demo shop.)",
+    "Small-batch speciality coffee, roasted every Tuesday and posted the next day. Single origins, blends and flexible subscriptions.",
   openGraph: { type: "website", siteName: "Cinderfield Coffee Roasters", locale: "en_GB" },
-  robots: { index: false, follow: false },
+  // a store that can't take real payments yet stays out of search results
+  robots: takesRealPayments ? { index: true, follow: true } : { index: false, follow: false },
 };
 
 export const viewport: Viewport = { themeColor: "#f5efe6" };

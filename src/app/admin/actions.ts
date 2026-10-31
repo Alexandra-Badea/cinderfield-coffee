@@ -10,7 +10,7 @@ export type Result = { ok: true; demo?: boolean } | { ok: false; error: string }
 const statuses: OrderStatus[] = ["paid", "roasting", "shipped", "delivered", "cancelled"];
 
 /*
- * Admin changes. In demo mode they aren't saved on the server (the admin page keeps them in the browser).
+ * Admin changes. Without a database they aren't saved on the server (the admin page keeps them in the browser).
  * Live, they run as the signed-in user, so the database refuses anyone who isn't an admin.
  */
 

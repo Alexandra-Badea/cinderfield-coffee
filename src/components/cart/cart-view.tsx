@@ -139,14 +139,14 @@ export function CartView({ live }: { live: boolean }) {
           <div className="flex justify-between"><dt className="text-muted">Delivery</dt><dd className="tabular-nums">{t.shipping === 0 ? "Free" : formatGBP(t.shipping)}</dd></div>
           <div className="flex justify-between border-t border-line pt-3 text-lg font-semibold"><dt>Total</dt><dd className="tabular-nums">{formatGBP(t.total)}</dd></div>
         </dl>
-        {subscription && <p className="text-sm text-muted">Subscriptions renew at the same price, with free delivery. Skip or cancel anytime from your account.</p>}
+        {subscription && <p className="text-sm text-muted">Subscriptions renew at the same price, with free delivery. Change or cancel anytime from your account.</p>}
 
         <button type="button" onClick={checkout} disabled={busy} className={buttonClass("primary", "lg", "w-full")}>
           <Lock className="h-4 w-4" aria-hidden="true" /> {busy ? "Opening secure checkout…" : "Checkout"}
         </button>
         {error && <p role="alert" className="text-sm text-ember">{error}</p>}
         <p className="text-center text-xs text-muted">
-          {live ? "Payments are handled by Stripe, in test mode." : "Demo shop: the next step takes your details but no payment."}
+          {live ? "Secure payment by Stripe. We never see your card details." : "Card payments aren't switched on yet: the next step takes your details only."}
         </p>
       </aside>
     </div>

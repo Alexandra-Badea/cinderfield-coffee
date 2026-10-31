@@ -15,7 +15,7 @@ export function DemoAccount() {
       <p className="flex gap-3 rounded-2xl bg-sand/70 p-4 text-roast">
         <Info className="mt-1 h-4 w-4 shrink-0 text-ember" aria-hidden="true" />
         <span>
-          In the live shop, customers sign in here to see their orders and manage subscriptions (accounts run on Supabase). In this demo, there are no accounts: below are the demo orders placed in this browser.
+          Customer accounts aren&apos;t switched on for this store yet. Here are the orders placed from this browser.
         </span>
       </p>
       <section>

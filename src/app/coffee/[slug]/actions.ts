@@ -8,7 +8,7 @@ export type ReviewState = { ok: boolean; message: string } | null;
 
 /** Leaves a review. Only signed-in customers can, and the database checks that too (Row Level Security). */
 export async function addReview(_prev: ReviewState, form: FormData): Promise<ReviewState> {
-  if (!hasSupabase) return { ok: false, message: "Reviews need accounts, which need the database. In this demo they're read-only." };
+  if (!hasSupabase) return { ok: false, message: "Reviews open once customer accounts are switched on." };
   const productId = String(form.get("productId") ?? "");
   const rating = Number(form.get("rating"));
   const body = String(form.get("body") ?? "").trim();

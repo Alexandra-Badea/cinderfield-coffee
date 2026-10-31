@@ -60,7 +60,7 @@ export default function ShippingPage() {
         Coffee is food, so we can&apos;t take back opened bags. But if your parcel arrives damaged, you got the wrong grind, or the coffee just isn&apos;t for you, email <a href={`mailto:${shop.email}`}>{shop.email}</a> within 30 days and we&apos;ll send a replacement or refund you. No forms, no photos of the bag needed.
       </p>
       <p>
-        Subscriptions can be skipped, paused or cancelled at any time; see <Link href="/subscriptions">how subscriptions work</Link>.
+        Subscriptions can be changed or cancelled at any time; see <Link href="/subscriptions">how subscriptions work</Link>.
       </p>
     </InfoPage>
   );

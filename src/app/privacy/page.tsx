@@ -4,7 +4,7 @@ import { shop } from "@/lib/config";
 
 export const metadata: Metadata = {
   title: "Privacy",
-  description: "What this demo shop stores about you (very little), where, and why.",
+  description: "What we keep about you, why, and how to ask us to change or delete it.",
 };
 
 export default function PrivacyPage() {
@@ -12,50 +12,58 @@ export default function PrivacyPage() {
     <InfoPage
       eyebrow="Help"
       title="Privacy"
-      intro="Cinderfield is a demo shop, so this page describes exactly what the code stores, in plain English. A real shop would add its company details and a lawful basis for each item."
-      updated="30 October 2026"
+      intro="We keep as little about you as we can: enough to roast, post and look after your orders. We never sell your details or use advertising trackers."
+      updated="31 October 2026"
     >
-      <h2>In demo mode</h2>
-      <p>This is how the public preview runs. Nothing about you leaves your browser:</p>
+      <h2>What we keep, and why</h2>
       <ul>
         <li>
-          <strong>Your bag</strong> is saved in your browser&apos;s local storage (<code>cinderfield:cart:v1</code>), so it&apos;s still there if you reload.
+          <strong>Your account:</strong> your name, email address and a securely hashed password, so you can sign in and see your orders. We can&apos;t see your password.
         </li>
         <li>
-          <strong>Demo orders</strong> you place are kept in local storage too (<code>cinderfield:orders:v1</code>), so the account page can show them. The name, email and address you type are never sent to a database.
+          <strong>Your orders:</strong> your name, email, delivery address and what you bought, so we can roast and post your coffee, deal with returns and keep the records the law asks for.
         </li>
         <li>
-          <strong>Changes you make in the demo admin</strong> stay in your browser (<code>cinderfield:admin:v1</code>), so you can&apos;t affect anyone else.
+          <strong>Payments</strong> are handled by Stripe on their own secure checkout page. Your card details never reach us; we only see that the payment went through.
         </li>
         <li>
-          <strong>Newsletter sign-ups</strong> are checked and then discarded.
+          <strong>Our newsletter:</strong> just your email address, until you unsubscribe.
+        </li>
+        <li>
+          <strong>Reviews</strong> show your first name (or the start of your email address) next to what you wrote.
         </li>
       </ul>
-      <p>Clearing your browser&apos;s site data removes all of it. There are no cookies, no analytics and no advertising trackers.</p>
 
-      <h2>In live mode</h2>
-      <p>When the shop is connected to Supabase and Stripe:</p>
+      <h2>Cookies and storage</h2>
+      <p>
+        We use one cookie to keep you signed in, and your browser&apos;s local storage to remember what&apos;s in your bag between visits. Both are needed for the shop to work, so there&apos;s no cookie banner. We don&apos;t use analytics or advertising cookies.
+      </p>
+
+      <h2>Who else sees it</h2>
       <ul>
         <li>
-          <strong>Accounts:</strong> your email and a hashed password are stored by Supabase Auth. A sign-in cookie keeps you signed in; it&apos;s strictly necessary, so there&apos;s no cookie banner.
+          <strong>Stripe</strong> processes payments and subscriptions.
         </li>
         <li>
-          <strong>Orders:</strong> your name, email, delivery address and what you bought are stored so we can roast, post and help with returns.
+          <strong>Supabase</strong> hosts our database and sign-ins.
         </li>
         <li>
-          <strong>Payments</strong> are handled by Stripe on their own checkout page. Card details never reach this site&apos;s server.
+          <strong>Vercel</strong> hosts the website.
         </li>
         <li>
-          <strong>Newsletter:</strong> just your email, until you unsubscribe.
-        </li>
-        <li>
-          <strong>Reviews</strong> show your first name (or the start of your email address) and are linked to your account.
+          <strong>Royal Mail and our couriers</strong> get your name and address to deliver your parcel.
         </li>
       </ul>
+      <p>Each only uses your details to provide their service to us.</p>
+
+      <h2>How long we keep it</h2>
+      <p>
+        Order records are kept for six years, as UK tax law requires. Your account stays until you ask us to close it. Newsletter addresses are deleted when you unsubscribe.
+      </p>
 
       <h2>Your rights</h2>
       <p>
-        You can ask to see, correct or delete anything stored about you by emailing <a href={`mailto:${shop.email}`}>{shop.email}</a>. In a real shop you could also complain to the Information Commissioner&apos;s Office (ICO) in the UK.
+        You can ask to see, correct or delete anything we keep about you, or ask us to stop using it, by emailing <a href={`mailto:${shop.email}`}>{shop.email}</a>. We&apos;ll reply within a month. If you&apos;re not happy with how we handle your data, you can complain to the Information Commissioner&apos;s Office (ICO).
       </p>
     </InfoPage>
   );

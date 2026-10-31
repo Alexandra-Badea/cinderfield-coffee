@@ -124,7 +124,7 @@ export function SubscriptionBuilder({ products }: { products: Product[] }) {
         <button type="button" onClick={start} className="mt-6 inline-flex h-13 w-full items-center justify-center gap-2 rounded-full bg-ember font-semibold text-white transition hover:bg-ember-dark active:translate-y-px">
           {added ? <><Check className="h-5 w-5" aria-hidden="true" /> Added to your bag</> : <><RefreshCw className="h-5 w-5" aria-hidden="true" /> Start my subscription</>}
         </button>
-        <p className="mt-3 text-center text-xs text-cream/55">First bag today, then every {every} weeks. Skip, swap or cancel anytime.</p>
+        <p className="mt-3 text-center text-xs text-cream/55">First bag today, then every {every} weeks. Change or cancel anytime.</p>
       </aside>
     </div>
   );

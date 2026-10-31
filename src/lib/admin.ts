@@ -12,7 +12,7 @@ export type AdminData =
 
 /**
  * Everything the admin pages need. Live: read as the signed-in user, so Row Level Security
- * only returns data if they're an admin. Demo: the built-in catalogue; orders are generated in the browser.
+ * only returns data if they're an admin. Without a database: the built-in catalogue, and orders generated in the browser.
  */
 export async function loadAdmin(): Promise<AdminData> {
   if (!hasSupabase) return { ok: true, live: false, orders: null, products: seedProducts, codes: seedCodes };

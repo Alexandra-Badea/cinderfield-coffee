@@ -13,7 +13,7 @@ const promises = [
   "Roasted every Tuesday, posted Wednesday",
   `Free UK delivery over ${formatGBP(shop.freeShippingFrom)}`,
   "Plastic-free, home-compostable bags",
-  "Pause or cancel subscriptions anytime",
+  "Change or cancel subscriptions anytime",
   "We pay farmers above Fairtrade prices",
 ];
 
@@ -24,6 +24,10 @@ export default async function Home() {
   const featured = products.filter((p) => p.featured).slice(0, 4);
   const best = reviews.filter((r) => r.rating === 5).slice(0, 3);
   const nameOf = new Map(products.map((p) => [p.id, p]));
+  // the average across every review, so the hero shows what customers actually said
+  const counted = Object.values(ratings);
+  const reviewCount = counted.reduce((n, r) => n + r.count, 0);
+  const average = reviewCount ? counted.reduce((s, r) => s + r.average * r.count, 0) / reviewCount : 0;
 
   return (
     <>
@@ -47,9 +51,11 @@ export default async function Home() {
                 Find your coffee
               </Link>
             </div>
-            <p className="mt-8 flex items-center gap-2 text-sm text-muted">
-              <Stars rating={4.8} /> <span>Loved by home brewers across the UK</span>
-            </p>
+            {reviewCount > 0 && (
+              <p className="mt-8 flex items-center gap-2 text-sm text-muted">
+                <Stars rating={average} /> <span>{average.toFixed(1)} from {reviewCount} customer reviews</span>
+              </p>
+            )}
           </div>
           <HeroBags bags={heroBags} />
         </div>
@@ -93,7 +99,7 @@ export default async function Home() {
               <p className="eyebrow text-[#f3a37e]">Subscriptions</p>
               <h2 className="mt-3 text-4xl md:text-5xl">Never run out of good coffee</h2>
               <p className="mt-5 max-w-md text-lg text-cream/75">
-                Pick any coffee and how often you want it. We roast it fresh and post it, with free delivery and {shop.subscriptionDiscount}% off every bag. Skip, swap or cancel in a click.
+                Pick any coffee and how often you want it. We roast it fresh and post it, with free delivery and {shop.subscriptionDiscount}% off every bag. Change or cancel anytime from your account.
               </p>
               <Link href="/subscriptions" className={buttonClass("primary", "lg", "mt-8")}>
                 Start a subscription
@@ -102,7 +108,7 @@ export default async function Home() {
             <ol className="grid gap-4">
               {[
                 { icon: Flame, t: "Choose your coffee", d: "Any coffee in the shop, or let us surprise you with a new one each time." },
-                { icon: RefreshCw, t: "Every 2 or 4 weeks", d: "Change how often, skip a delivery or pause while you're away." },
+                { icon: RefreshCw, t: "Every 2 or 4 weeks", d: "Change your card or cancel from your account, any time." },
                 { icon: PackageCheck, t: "Roasted, then posted", d: "Your bag is roasted on Tuesday and through your letterbox by Friday." },
               ].map(({ icon: Icon, t, d }, i) => (
                 <li key={t} className="flex gap-4 rounded-2xl bg-cream/[0.06] p-5 ring-1 ring-cream/10">
@@ -202,28 +208,29 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* Reviews */}
-      <section className="container-x pt-24 md:pt-32">
-        <div className="text-center">
-          <p className="eyebrow">Kind words</p>
-          <h2 className="mt-3 text-4xl md:text-5xl">From people who brew at home</h2>
-        </div>
-        <div className="mt-12 grid gap-5 md:grid-cols-3">
-          {best.map((r) => (
-            <figure key={r.id} className="flex flex-col rounded-card bg-cream p-7 shadow-soft">
-              <Stars rating={r.rating} />
-              <blockquote className="mt-4 flex-1 font-display text-xl leading-snug">&ldquo;{r.body}&rdquo;</blockquote>
-              <figcaption className="mt-6 text-sm text-muted">
-                <span className="font-semibold text-espresso">{r.author}</span> on{" "}
-                <Link href={`/coffee/${nameOf.get(r.productId)?.slug}`} className="underline decoration-line underline-offset-2 hover:text-ember">
-                  {nameOf.get(r.productId)?.name}
-                </Link>
-              </figcaption>
-            </figure>
-          ))}
-        </div>
-        <p className="mt-6 text-center text-xs text-muted">Sample reviews for this demo shop.</p>
-      </section>
+      {/* Reviews: only once there are some to show */}
+      {best.length > 0 && (
+        <section className="container-x pt-24 md:pt-32">
+          <div className="text-center">
+            <p className="eyebrow">Kind words</p>
+            <h2 className="mt-3 text-4xl md:text-5xl">From people who brew at home</h2>
+          </div>
+          <div className="mt-12 grid gap-5 md:grid-cols-3">
+            {best.map((r) => (
+              <figure key={r.id} className="flex flex-col rounded-card bg-cream p-7 shadow-soft">
+                <Stars rating={r.rating} />
+                <blockquote className="mt-4 flex-1 font-display text-xl leading-snug">&ldquo;{r.body}&rdquo;</blockquote>
+                <figcaption className="mt-6 text-sm text-muted">
+                  <span className="font-semibold text-espresso">{r.author}</span> on{" "}
+                  <Link href={`/coffee/${nameOf.get(r.productId)?.slug}`} className="underline decoration-line underline-offset-2 hover:text-ember">
+                    {nameOf.get(r.productId)?.name}
+                  </Link>
+                </figcaption>
+              </figure>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* Newsletter */}
       <section className="container-x pt-24 md:pt-32">

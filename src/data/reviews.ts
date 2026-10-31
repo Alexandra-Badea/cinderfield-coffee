@@ -1,6 +1,6 @@
 import type { DiscountCode, Review } from "@/lib/types";
 
-/** Sample reviews for demo mode. The site's demo banner says the shop, its products and reviews are made up. */
+/** Sample reviews, shown when no database is connected. The database only gets them if SEED_SAMPLE_REVIEWS is set (see scripts/migrate.mjs). */
 export const reviews: Review[] = [
   { id: "r1", productId: "p-morning-field", author: "Hannah", rating: 5, body: "Our everyday coffee now. Lovely in a flat white and still good when I forget it in the cafetière.", createdAt: "2026-09-28" },
   { id: "r2", productId: "p-morning-field", author: "Tom", rating: 4, body: "Smooth and sweet. I'd like it a touch stronger for espresso, but as filter it's spot on.", createdAt: "2026-09-12" },
@@ -22,7 +22,7 @@ export const reviews: Review[] = [
   { id: "r18", productId: "p-decaf", author: "Sam", rating: 4, body: "Nobody at work guessed it was decaf.", createdAt: "2026-09-14" },
 ];
 
-/** Discount codes for demo mode (in live mode they live in the discount_codes table) */
+/** Starting discount codes. With Supabase connected they live in the discount_codes table. */
 export const discountCodes: DiscountCode[] = [
   { code: "WELCOME10", kind: "percent", value: 10, minSubtotal: 0, active: true, description: "10% off your first order" },
   { code: "FREESHIP", kind: "shipping", value: 0, minSubtotal: 1500, active: true, description: "Free standard delivery over £15" },
