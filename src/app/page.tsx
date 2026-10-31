@@ -41,7 +41,7 @@ export default async function Home() {
               Roasted on Tuesday. <em className="font-normal text-ember">In your cup</em> by Friday.
             </h1>
             <p className="mt-6 max-w-lg text-lg text-roast">
-              We roast in small batches every week and post the next day, so your coffee arrives at its sweetest. Single origins, a house blend you&apos;ll never tire of, and subscriptions you can pause anytime.
+              We roast in small batches every week and post the next day, so your coffee arrives at its sweetest. Single origins, a house blend you&apos;ll never tire of, and subscriptions you can change or cancel anytime.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link href="/shop" className={buttonClass("primary", "lg")}>
