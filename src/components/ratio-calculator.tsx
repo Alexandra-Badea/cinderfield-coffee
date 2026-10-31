@@ -24,7 +24,7 @@ export function RatioCalculator() {
   const { water, coffee, spoons } = brewAmounts(cups, ratio);
 
   return (
-    <div className="grid gap-8 rounded-[2rem] bg-cream p-6 shadow-soft sm:p-10 md:grid-cols-[1fr_1fr] md:items-center">
+    <div className="grid gap-8 rounded-[2rem] bg-cream p-5 shadow-soft sm:p-10 md:grid-cols-[1fr_1fr] md:items-center">
       <div className="space-y-7">
         <div>
           <p id="cups-label" className="text-sm font-semibold">How many mugs?</p>
@@ -51,9 +51,9 @@ export function RatioCalculator() {
         </fieldset>
       </div>
 
-      <div className="relative overflow-hidden rounded-[1.5rem] bg-espresso p-7 text-cream" aria-live="polite">
+      <div className="relative overflow-hidden rounded-[1.5rem] bg-espresso p-6 text-cream sm:p-7" aria-live="polite">
         <div className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-ember/30 blur-2xl" aria-hidden="true" />
-        <dl className="relative grid grid-cols-2 gap-6">
+        <dl className="relative grid gap-4 min-[400px]:grid-cols-2 min-[400px]:gap-6">
           <div>
             <dt className="text-sm text-cream/60">Coffee</dt>
             <dd className="font-display text-5xl tabular-nums">{coffee}<span className="ml-1 text-2xl text-cream/60">g</span></dd>

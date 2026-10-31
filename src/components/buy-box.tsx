@@ -104,8 +104,8 @@ export function BuyBox({ product }: { product: Product }) {
         </label>
       </fieldset>
 
-      <div className="flex gap-3">
-        <div className="inline-flex h-13 items-center rounded-full border border-line bg-cream">
+      <div className="flex gap-2 min-[380px]:gap-3">
+        <div className="inline-flex h-13 shrink-0 items-center rounded-full border border-line bg-cream">
           <button type="button" onClick={() => setQty((q) => Math.max(1, q - 1))} className="grid h-13 w-12 place-items-center rounded-l-full hover:bg-espresso/5" aria-label="Fewer bags">
             <Minus className="h-4 w-4" />
           </button>
@@ -120,7 +120,7 @@ export function BuyBox({ product }: { product: Product }) {
           type="button"
           onClick={addToBag}
           disabled={soldOut}
-          className="inline-flex h-13 flex-1 items-center justify-center gap-2 rounded-full bg-ember px-6 font-semibold text-white shadow-[0_10px_24px_-10px_rgb(200_90_42/0.8)] transition hover:bg-ember-dark active:translate-y-px disabled:bg-espresso/30 disabled:shadow-none"
+          className="inline-flex h-13 flex-1 items-center justify-center gap-2 whitespace-nowrap rounded-full bg-ember px-4 font-semibold min-[380px]:px-6 text-white shadow-[0_10px_24px_-10px_rgb(200_90_42/0.8)] transition hover:bg-ember-dark active:translate-y-px disabled:bg-espresso/30 disabled:shadow-none"
         >
           {soldOut ? "Sold out" : added ? (<><Check className="h-5 w-5" /> Added</>) : (<><ShoppingBag className="h-5 w-5" /> {subscribe ? "Start subscription" : "Add to bag"}</>)}
         </button>

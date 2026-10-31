@@ -23,21 +23,27 @@ export default function ShippingPage() {
           <thead className="border-b border-line text-xs uppercase tracking-wider text-muted">
             <tr>
               <th scope="col" className="px-5 py-3 font-semibold">Option</th>
-              <th scope="col" className="px-3 py-3 font-semibold">Arrives</th>
+              <th scope="col" className="hidden px-3 py-3 font-semibold sm:table-cell">Arrives</th>
               <th scope="col" className="px-5 py-3 text-right font-semibold">Price</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-line text-espresso">
             {Object.values(shipping).map((s) => (
               <tr key={s.label}>
-                <td className="px-5 py-4 font-medium">{s.label}</td>
-                <td className="px-3 py-4 text-muted">{s.eta} after posting</td>
+                <td className="px-5 py-4 font-medium">
+                  {s.label}
+                  <span className="mt-0.5 block text-sm font-normal text-muted sm:hidden">{s.eta} after posting</span>
+                </td>
+                <td className="hidden px-3 py-4 text-muted sm:table-cell">{s.eta} after posting</td>
                 <td className="px-5 py-4 text-right tabular-nums">{formatGBP(s.price)}</td>
               </tr>
             ))}
             <tr className="bg-sage/10">
-              <td className="px-5 py-4 font-medium">Orders over {formatGBP(shop.freeShippingFrom)}, and subscriptions</td>
-              <td className="px-3 py-4 text-muted">{shipping.standard.eta} after posting</td>
+              <td className="px-5 py-4 font-medium">
+                Orders over {formatGBP(shop.freeShippingFrom)}, and subscriptions
+                <span className="mt-0.5 block text-sm font-normal text-muted sm:hidden">{shipping.standard.eta} after posting</span>
+              </td>
+              <td className="hidden px-3 py-4 text-muted sm:table-cell">{shipping.standard.eta} after posting</td>
               <td className="px-5 py-4 text-right font-semibold text-sage">Free</td>
             </tr>
           </tbody>

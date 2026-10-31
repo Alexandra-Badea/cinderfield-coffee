@@ -53,11 +53,11 @@ export function SubscriptionBuilder({ products }: { products: Product[] }) {
           <legend className={step}><span className={num}>1</span> Pick your coffee</legend>
           <div className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3">
             {list.map((p) => (
-              <label key={p.id} className={`group relative flex cursor-pointer items-center gap-3 rounded-2xl border-2 bg-cream p-3 transition ${p.id === product.id ? "border-espresso" : "border-transparent hover:border-espresso/20"}`}>
+              <label key={p.id} className={`group relative flex cursor-pointer flex-col items-start gap-2 rounded-2xl border-2 bg-cream p-3 transition min-[480px]:flex-row min-[480px]:items-center min-[480px]:gap-3 ${p.id === product.id ? "border-espresso" : "border-transparent hover:border-espresso/20"}`}>
                 <input type="radio" name="coffee" value={p.slug} checked={p.id === product.id} onChange={() => setSlug(p.slug)} className="sr-only" />
                 <BagArt product={p} className="h-auto w-10 shrink-0 transition group-hover:-rotate-3" />
                 <span className="min-w-0">
-                  <span className="block break-words font-display text-[0.95rem] leading-tight sm:text-[1.05rem]">{p.name}</span>
+                  <span className="block font-display text-[1rem] leading-tight [overflow-wrap:break-word] sm:text-[1.05rem]">{p.name}</span>
                   <span className="text-xs text-muted">{p.roast[0].toUpperCase() + p.roast.slice(1)} · {formatGBP(unitPrice(p, "250g", true))}</span>
                 </span>
               </label>
