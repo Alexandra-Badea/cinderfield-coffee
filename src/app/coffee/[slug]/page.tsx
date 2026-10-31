@@ -2,12 +2,12 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ChevronRight, Flame, MapPin, Mountain, Sprout, Truck } from "lucide-react";
-import { BagArt } from "@/components/bag-art";
 import { BuyBox } from "@/components/buy-box";
+import { StickyBuy } from "@/components/sticky-buy";
+import { Bag3D } from "@/components/three-d";
 import { ProductCard } from "@/components/product-card";
 import { ReviewForm } from "@/components/review-form";
 import { Stars } from "@/components/stars";
-import { Tilt } from "@/components/tilt";
 import { recipe } from "@/lib/brew";
 import { getProduct, getProducts, getRatings, getReviews } from "@/lib/catalog";
 import { grinds, hasSupabase, shipping, shop, siteUrl } from "@/lib/config";
@@ -81,14 +81,23 @@ export default async function CoffeePage({ params }: { params: Params }) {
 
       <section className="container-x mt-6 grid gap-10 lg:grid-cols-2 lg:gap-16">
         <div className="lg:sticky lg:top-28 lg:self-start">
-          <Tilt max={8}>
-            <div className="relative overflow-hidden rounded-[2rem] px-10 pb-8 pt-12 sm:px-20" style={{ background: `radial-gradient(90% 70% at 50% 35%, ${product.art.bag}aa, transparent 72%), var(--color-sand)` }}>
-              <BagArt product={product} className="mx-auto h-auto w-full max-w-[380px] drop-shadow-[0_30px_30px_rgba(42,28,21,.25)] [transform:translateZ(50px)]" />
+          <div
+            className="relative h-[420px] overflow-hidden rounded-[2.5rem] sm:h-[540px]"
+            style={{ background: `radial-gradient(70% 55% at 50% 40%, ${product.art.accent}30, transparent 75%), radial-gradient(60% 45% at 85% 95%, ${product.art.accent}26, transparent 70%), var(--color-sand)` }}
+          >
+            <div className="grain pointer-events-none absolute inset-0 opacity-30" aria-hidden="true" />
+            <Bag3D product={product} />
+            <div className="pointer-events-none absolute left-5 top-5 flex flex-wrap gap-1.5">
+              {product.isNew && <span className="rounded-full bg-ember px-3 py-1 text-xs font-bold uppercase tracking-wider text-white">New</span>}
+              {product.decaf && <span className="rounded-full bg-cream px-3 py-1 text-xs font-bold uppercase tracking-wider">Decaf</span>}
             </div>
-          </Tilt>
-          <ul className="mt-4 grid grid-cols-3 gap-3 text-center text-sm">
+          </div>
+          <ul className="mt-4 flex flex-wrap gap-2 text-sm" aria-label="Tasting notes">
             {product.notes.map((n) => (
-              <li key={n} className="rounded-2xl bg-cream px-3 py-3 font-display text-base shadow-soft">{n}</li>
+              <li key={n} className="flex items-center gap-2 rounded-full bg-cream px-4 py-2.5 font-display text-[0.95rem] font-medium shadow-soft">
+                <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: product.art.accent }} aria-hidden="true" />
+                {n}
+              </li>
             ))}
           </ul>
         </div>
@@ -113,7 +122,7 @@ export default async function CoffeePage({ params }: { params: Params }) {
             <span className="capitalize text-muted">{product.roast}</span>
           </div>
 
-          <div className="mt-8 border-t border-line pt-8">
+          <div id="buy" className="mt-8 scroll-mt-28 border-t border-line pt-8">
             <BuyBox product={product} />
           </div>
 
@@ -166,6 +175,8 @@ export default async function CoffeePage({ params }: { params: Params }) {
           </div>
         </div>
       </section>
+
+      <StickyBuy name={product.name} price={product.price250} />
 
       <section id="reviews" className="container-x mt-24 scroll-mt-24 grid gap-10 lg:grid-cols-[1fr_1.4fr]">
         <div>
