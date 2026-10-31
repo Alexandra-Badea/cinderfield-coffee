@@ -10,9 +10,12 @@
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
     "db:migrate": "node scripts/migrate.mjs",
-    "db:seed-file": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/make-seed.mts"
+    "db:seed-file": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/make-seed.mts",
+    "email:templates": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/make-email-templates.mts"
   },
   "dependencies": {
+    "@react-three/drei": "^10.7.9",
+    "@react-three/fiber": "^9.8.2",
     "@supabase/ssr": "^0.12.7",
     "@supabase/supabase-js": "^2.118.0",
     "clsx": "^2.1.1",
@@ -22,7 +25,8 @@
     "react": "19.3.0",
     "react-dom": "19.3.0",
     "server-only": "^0.0.1",
-    "stripe": "^23.1.0"
+    "stripe": "^23.1.0",
+    "three": "^0.187.0"
   },
   "devDependencies": {
     "@electric-sql/pglite": "^0.5.13",
@@ -30,6 +34,7 @@
     "@types/node": "^22.20.5",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@types/three": "^0.187.0",
     "eslint": "^9",
     "eslint-config-next": "16.4.3",
     "tailwindcss": "^4",
