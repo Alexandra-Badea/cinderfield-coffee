@@ -6,6 +6,7 @@ import { DemoReceipt } from "@/components/demo-receipt";
 import { OrderReceipt } from "@/components/order-receipt";
 import { buttonClass } from "@/components/ui/button";
 import { isLive } from "@/lib/config";
+import { markPaid } from "@/lib/fulfil";
 import { stripe } from "@/lib/stripe";
 import { serviceClient } from "@/lib/supabase/clients";
 import { toOrder, type OrderRow } from "@/lib/supabase/map";
@@ -39,6 +40,8 @@ async function Receipt({ searchParams }: { searchParams: SP }) {
 
   if (isLive && sessionId) {
     const session = await stripe().checkout.sessions.retrieve(sessionId);
+    // Record the payment here as well as in the webhook: whichever arrives first wins, the other changes nothing
+    if (session.status === "complete") await markPaid(session);
     const { data } = await serviceClient().from("orders").select("*, order_items(*)").eq("stripe_session_id", sessionId).maybeSingle();
     if (!data) return <p>We couldn&apos;t find that order. If you were charged, please email us and we&apos;ll sort it out.</p>;
     const order = toOrder(data as OrderRow);

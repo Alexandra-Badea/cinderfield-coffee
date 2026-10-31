@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { formatGBP, lineKey, totals, unitPrice } from "./pricing";
+import { formatGBP, frequencyProblem, lineKey, totals, unitPrice } from "./pricing";
 import type { CartLine, DiscountCode } from "./types";
 
 const products = new Map([
@@ -76,5 +76,14 @@ describe("helpers", () => {
   it("gives the same key to the same choice, and a different one to a subscription", () => {
     expect(lineKey(line())).toBe(lineKey(line({ qty: 3 })));
     expect(lineKey(line())).not.toBe(lineKey(line({ every: 2 })));
+  });
+});
+
+describe("frequencyProblem", () => {
+  it("allows one-off bags alongside a subscription", () => {
+    expect(frequencyProblem([line(), line({ every: 4 }), line({ every: 4, productId: "b" })])).toBeNull();
+  });
+  it("stops subscriptions on different schedules in one order", () => {
+    expect(frequencyProblem([line({ every: 2 }), line({ every: 4 })])).toMatch(/same|together/);
   });
 });

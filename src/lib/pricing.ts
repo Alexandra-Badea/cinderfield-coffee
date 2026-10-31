@@ -74,6 +74,15 @@ export function totals(
   };
 }
 
+/**
+ * Stripe bills a subscription on one schedule, so every subscribed bag in an order must come
+ * at the same frequency. Returns what to tell the customer, or null when the bag is fine.
+ */
+export function frequencyProblem(lines: Pick<CartLine, "every">[]): string | null {
+  const schedules = new Set(lines.map((l) => l.every).filter(Boolean));
+  return schedules.size > 1 ? "Subscriptions in one order need to arrive together. Please set them all to every 2 weeks or all to every 4 weeks." : null;
+}
+
 export function formatGBP(pence: number) {
   const pounds = pence / 100;
   return new Intl.NumberFormat("en-GB", {

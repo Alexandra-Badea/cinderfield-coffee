@@ -7,7 +7,7 @@ import { Lock, ShoppingBag, Tag, X } from "lucide-react";
 import { checkCode } from "@/app/actions";
 import { buttonClass } from "@/components/ui/button";
 import { shipping } from "@/lib/config";
-import { formatGBP, totals } from "@/lib/pricing";
+import { formatGBP, frequencyProblem, totals } from "@/lib/pricing";
 import type { DiscountCode, ShippingMethod } from "@/lib/types";
 import { CartLines } from "./cart-lines";
 import { useCart } from "./cart-provider";
@@ -31,6 +31,7 @@ export function CartView({ live }: { live: boolean }) {
 
   const t = totals(lines, products, method, discount);
   const subscription = lines.some((l) => l.every);
+  const schedule = frequencyProblem(lines);
 
   function applyCode(e: React.FormEvent) {
     e.preventDefault();
@@ -141,7 +142,8 @@ export function CartView({ live }: { live: boolean }) {
         </dl>
         {subscription && <p className="text-sm text-muted">Subscriptions renew at the same price, with free delivery. Change or cancel anytime from your account.</p>}
 
-        <button type="button" onClick={checkout} disabled={busy} className={buttonClass("primary", "lg", "w-full")}>
+        {schedule && <p role="alert" className="rounded-xl bg-ember/10 p-3 text-sm text-ember">{schedule}</p>}
+        <button type="button" onClick={checkout} disabled={busy || Boolean(schedule)} className={buttonClass("primary", "lg", "w-full")}>
           <Lock className="h-4 w-4" aria-hidden="true" /> {busy ? "Opening secure checkout…" : "Checkout"}
         </button>
         {error && <p role="alert" className="text-sm text-ember">{error}</p>}

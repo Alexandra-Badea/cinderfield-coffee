@@ -77,6 +77,9 @@ describe("a signed-in customer", () => {
     await db.exec(`update public.profiles set full_name = 'Ann C' where id = '${ann}'`);
     await expect(db.exec(`update public.profiles set role = 'admin' where id = '${ann}'`)).rejects.toThrow();
   });
+  it("can't point their account at someone else's Stripe customer", async () => {
+    await expect(db.exec(`update public.profiles set stripe_customer_id = 'cus_someone_else' where id = '${ann}'`)).rejects.toThrow();
+  });
   it("can't change an order's status or take stock", async () => {
     await db.exec("update public.orders set status = 'delivered'");
     expect((await rows<{ status: string }>(`select status from public.orders where id = '${annOrder}'`))[0].status).toBe("paid");

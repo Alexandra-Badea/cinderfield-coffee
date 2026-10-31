@@ -1,7 +1,7 @@
 import "server-only";
 import { findDiscount, getProducts } from "./catalog";
 import { grinds, sizes } from "./config";
-import { totals, type Totals } from "./pricing";
+import { frequencyProblem, totals, type Totals } from "./pricing";
 import type { Address, CartLine, Product, ShippingMethod } from "./types";
 
 export type CheckoutRequest = {
@@ -36,6 +36,9 @@ export async function priceCart(body: CheckoutRequest): Promise<Priced | { error
     if (qty > product.stock) return { error: `We only have ${product.stock} bags of ${product.name} left. Please lower the quantity.` };
     lines.push({ productId: product.id, slug: product.slug, name: product.name, size: raw.size, grind: raw.grind, qty, every: raw.every });
   }
+
+  const schedule = frequencyProblem(lines);
+  if (schedule) return { error: schedule };
 
   // the same coffee in several lines still has to fit the stock
   const perProduct = new Map<string, number>();

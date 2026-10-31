@@ -71,6 +71,13 @@ export async function POST(request: Request) {
   );
   if (itemsError) return NextResponse.json({ error: "We couldn't start checkout. Please try again." }, { status: 500 });
 
+  // Signed-in customers keep one Stripe customer record, so their cards and subscriptions stay together
+  let customerId: string | null = null;
+  if (auth.user) {
+    const { data: profile } = await db.from("profiles").select("stripe_customer_id").eq("id", auth.user.id).maybeSingle();
+    customerId = profile?.stripe_customer_id ?? null;
+  }
+
   const subscription = t.lines.some((l) => l.every);
   const lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] = t.lines.map((l) => ({
     quantity: l.qty,
@@ -93,7 +100,9 @@ export async function POST(request: Request) {
     mode: subscription ? "subscription" : "payment",
     line_items: lineItems,
     discounts,
-    customer_email: auth.user?.email,
+    ...(customerId ? { customer: customerId } : { customer_email: auth.user?.email }),
+    // one-off orders only create a Stripe customer when asked; subscriptions always do
+    ...(!subscription && !customerId && auth.user ? { customer_creation: "always" as const } : {}),
     client_reference_id: order.id,
     metadata: { order_id: order.id },
     ...(subscription ? { subscription_data: { metadata: { order_id: order.id } } } : {}),
