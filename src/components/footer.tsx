@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Logo } from "./logo";
+import { Mark } from "./logo";
 import { NewsletterForm } from "./newsletter-form";
 import { shop } from "@/lib/config";
 
@@ -35,28 +35,28 @@ const columns = [
 
 export function Footer() {
   return (
-    <footer className="mt-24 bg-espresso text-cream">
-      <div className="container-x grid gap-12 py-16 md:grid-cols-[1.3fr_2fr]">
+    <footer className="roastery relative mt-28 overflow-hidden rounded-t-[2.5rem] sm:rounded-t-[3.5rem]">
+      <div className="grain pointer-events-none absolute inset-0 opacity-25" aria-hidden="true" />
+      <div className="container-x relative grid gap-14 pb-10 pt-16 md:grid-cols-[1.25fr_2fr] md:pt-20">
         <div className="max-w-sm">
-          <Logo light />
-          <p className="mt-5 text-cream/70">
-            Small-batch coffee, roasted every Tuesday and posted on Wednesday. Plastic-free bags, fair prices for farmers.
+          <p className="display text-4xl text-cream sm:text-5xl">
+            Fresh coffee, <em className="text-glow">every month.</em>
           </p>
-          <p className="mt-8 font-display text-xl">One email a month. New coffees first.</p>
-          <div className="mt-4">
+          <p className="mt-4 text-cream/65">New single origins, small lots before they sell out, and nothing else. One email a month.</p>
+          <div className="mt-6">
             <NewsletterForm dark />
           </div>
         </div>
         <div className="grid grid-cols-2 gap-8 sm:grid-cols-3">
           {columns.map((col) => (
             <div key={col.title}>
-              <h2 className="text-sm font-semibold uppercase tracking-[0.14em] text-cream/50" style={{ fontFamily: "var(--font-sans)" }}>
+              <h2 className="text-xs font-semibold uppercase tracking-[0.16em] text-cream/45" style={{ fontFamily: "var(--font-sans)", fontStretch: "100%" }}>
                 {col.title}
               </h2>
               <ul className="mt-4 space-y-2.5">
                 {col.links.map((l) => (
                   <li key={l.href}>
-                    <Link href={l.href} className="text-cream/85 transition hover:text-white">
+                    <Link href={l.href} className="text-cream/80 transition hover:text-white">
                       {l.label}
                     </Link>
                   </li>
@@ -66,9 +66,15 @@ export function Footer() {
           ))}
         </div>
       </div>
-      <div className="border-t border-cream/10">
+      {/* the name, as big as the page allows */}
+      <p aria-hidden="true" className="display pointer-events-none relative -mb-[0.2em] select-none whitespace-nowrap px-2 text-center text-[19.5vw] leading-none text-transparent [-webkit-text-stroke:1.5px_rgb(242_196_141/0.4)] md:text-[17.5vw]">
+        Cinderfield
+      </p>
+      <div className="relative border-t border-cream/10">
         <div className="container-x flex flex-col gap-2 py-6 text-sm text-cream/55 sm:flex-row sm:items-center sm:justify-between">
-          <p>© 2026 {shop.name}</p>
+          <p className="flex items-center gap-2">
+            <Mark className="h-5 w-5" /> © 2026 {shop.name}
+          </p>
           <p>
             Designed and built by{" "}
             <a href="https://pagesbyalexa.com" className="font-semibold text-cream/85 underline decoration-cream/30 underline-offset-2 hover:text-white">
