@@ -174,6 +174,6 @@ supabase/
 - Shipping emails ("your coffee is on its way") when an order is marked shipped in the admin. They'd use the same templates and Resend.
 - Gift subscriptions.
 
-## Licence
+## Copyright
 
-MIT. The fonts (Bricolage Grotesque, Instrument Serif and Instrument Sans) are under the SIL Open Font License; see `src/fonts/OFL.txt`.
+© 2026 Alexandra Badea. All rights reserved: the code is public to read, but please ask before reusing it. The fonts (Bricolage Grotesque, Instrument Serif and Instrument Sans) are under the SIL Open Font License; see `src/fonts/OFL.txt`.
